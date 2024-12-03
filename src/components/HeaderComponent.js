@@ -4,27 +4,30 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "../assets/images/logo.png";
-import headerStyles from "../assets/styles/headerStyles"; // Importing the stylesheet
-
+import styles from "../assets/styles/headerStyles"; // Importing the stylesheet
+import { useNavigate } from "react-router-dom";
 const HeaderComponent = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const toggleModal = () => setModalOpen(!isModalOpen);
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
 
   return (
     <>
-      <AppBar position="static" sx={headerStyles.appBar}>
-        <Toolbar sx={headerStyles.toolbar}>
+      <AppBar position="static" sx={styles.appBar}>
+        <Toolbar sx={styles.toolbar}>
           {/* Logo */}
-          <img src={Logo} style={headerStyles.logo} alt="logo" />
+          <img src={Logo} style={styles.logo} alt="logo" />
 
           {/* Hamburger Menu */}
           <IconButton
             color="inherit"
             onClick={toggleModal}
-            style={headerStyles.menuIcon}
+            style={styles.menuIcon}
           >
-            <MenuIcon style={headerStyles.menuIcon} />
+            <MenuIcon style={styles.menuIcon} />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -33,7 +36,7 @@ const HeaderComponent = () => {
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
-            style={headerStyles.modal}
+            style={styles.modal}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -49,15 +52,18 @@ const HeaderComponent = () => {
                 zIndex: 10,
               }}
             >
-              <CloseIcon style={headerStyles.closeIcon} />
+              <CloseIcon style={styles.closeIcon} />
             </IconButton>
-            <Box sx={headerStyles.box}>
+            <Box sx={styles.box}>
               {["Home", "About", "Portfolio", "Contact"].map((item, index) => (
                 <Typography
                   key={index}
                   variant="h3"
-                  sx={headerStyles.menuItem}
-                  onClick={toggleModal}
+                  sx={styles.menuItem}
+                  onClick={() => {
+                    navigate(`/${item}`);
+                    toggleModal();
+                  }}
                 >
                   {item}
                 </Typography>
