@@ -2,6 +2,7 @@ const headerStyles = {
   appBar: {
     backgroundColor: "black",
     boxShadow: "none",
+    height: "80px",
   },
   toolbar: {
     display: "flex",
@@ -14,8 +15,9 @@ const headerStyles = {
     objectFit: "cover",
   },
   menuIcon: {
-    fontSize: "60px",
+    fontSize: "50px",
     padding: "0px",
+    marginRight: "5px",
   },
   modal: {
     position: "fixed",
@@ -31,7 +33,7 @@ const headerStyles = {
     alignItems: "center",
   },
   closeIcon: {
-    fontSize: "60px",
+    fontSize: "50px",
   },
   box: {
     display: "flex",
