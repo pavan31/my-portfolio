@@ -21,13 +21,14 @@ const styles = {
   },
   title: {
     boxSizing: "border-box",
-    fontSize: "32px",
+    fontSize: "40px",
     marginBottom: "20px",
     textTransform: "uppercase",
     fontWeight: "bold",
     width: "100%",
     textAlign: "center",
     margin: "20px 0px",
+    letterSpacing: "1.5px",
   },
   contentBox: {
     width: "100%",

@@ -1,6 +1,8 @@
 import React from "react";
 import styles from "../assets/styles/AboutMePageStyles";
 import { Grid, Typography } from "@mui/material";
+import SkillsGridComponent from "../components/SkillsGridComponent";
+import AboutComponent from "../components/AboutComponent";
 
 const AboutMePage = () => {
   return (
@@ -18,11 +20,11 @@ const AboutMePage = () => {
         }}
         container
       >
-        <Grid style={styles.subContainer} sm={12} md={12} lg={6} xl={6}>
-          <Typography style={styles.subTitle}>who I am, what I do</Typography>
+        <Grid style={styles.subContainer} xs={12} md={6}>
+          <AboutComponent />
         </Grid>
-        <Grid style={styles.subContainer} sm={12} md={12} lg={6} xl={6}>
-          <Typography style={styles.subTitle}>My Skills</Typography>
+        <Grid style={styles.subContainer} xs={12} md={6}>
+          <SkillsGridComponent />
         </Grid>
       </Grid>
     </div>
