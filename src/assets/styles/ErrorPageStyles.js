@@ -11,6 +11,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
+    padding: "0px 20px",
   },
   title: {
     boxSizing: "border-box",
@@ -31,12 +32,15 @@ const styles = {
     color: "white",
     fontSize: "48px",
     letterSpacing: "1.5px",
+    textAlign: "center",
+    marginBottom: "15px",
   },
   desc: {
     color: "white",
     fontSize: "24px",
     letterSpacing: "1.5px",
-    marginBottom: "15px",
+    marginBottom: "20px",
+    textAlign: "center",
   },
   button: {
     color: "white",
