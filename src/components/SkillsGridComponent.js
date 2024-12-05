@@ -59,7 +59,6 @@ const SkillsGricComponent = () => {
           <motion.div
             key={index}
             style={styles.card}
-            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}

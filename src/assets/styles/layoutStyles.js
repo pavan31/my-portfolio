@@ -7,6 +7,7 @@ const styles = {
   contentArea: {
     width: "100%",
     display: "flex",
+    marginTop: "80px",
   },
 };
 
