@@ -1,8 +1,12 @@
+import { theme } from "../../theme";
+
 const headerStyles = {
   appBar: {
-    backgroundColor: "black",
+    backgroundColor: theme.colors.primary,
     boxShadow: "none",
     height: "80px",
+    position: "fixed",
+    zIndex: "100",
   },
   toolbar: {
     display: "flex",

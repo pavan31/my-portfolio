@@ -58,7 +58,7 @@ const styles = {
   },
   icon: {
     fontSize: "3rem",
-    color: "#007bff",
+    color: theme.colors.primary,
     marginBottom: "10px",
   },
   text: {
