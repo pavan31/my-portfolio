@@ -16,9 +16,9 @@ const ErrorPage = () => {
         <Button
           variant="outlined"
           sx={styles.button}
-          onClick={() => navigate("/Home")}
+          onClick={() => navigate("/")}
         >
-          Go Home
+          Go To Profile
         </Button>
       </Grid>
     </Box>
