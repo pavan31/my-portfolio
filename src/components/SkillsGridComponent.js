@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Typography } from "@mui/material";
 import styles from "../assets/styles/AboutMePageStyles";
 
 const skillsStyles = {
@@ -15,19 +14,26 @@ const skillsStyles = {
 };
 
 const skills = [
+  { name: "React.js", icon: "fab fa-react" },
+  { name: "React Native", icon: "fab fa-react" },
+  { name: "Tailwind CSS", icon: "fas fa-wind" },
+  { name: "Material UI", icon: "fas fa-palette" },
+  { name: "Next.js", icon: "fas fa-layer-group" },
+  { name: "Angular", icon: "fab fa-angular" },
+  { name: "Redux", icon: "fas fa-exchange-alt" },
+  { name: "Bootstrap", icon: "fab fa-bootstrap" },
   { name: "HTML", icon: "fab fa-html5" },
   { name: "CSS", icon: "fab fa-css3-alt" },
   { name: "JavaScript", icon: "fab fa-js" },
-  { name: "React.js", icon: "fab fa-react" },
-  { name: "React Native", icon: "fab fa-react" },
-  { name: "Angular", icon: "fab fa-angular" },
-  { name: "Bootstrap", icon: "fab fa-bootstrap" },
   { name: "Node.js", icon: "fab fa-node-js" },
   { name: "MongoDB", icon: "fas fa-database" },
   { name: "Express.js", icon: "fas fa-server" },
+  { name: "Spring Boot", icon: "fas fa-leaf" },
   { name: "Git", icon: "fab fa-git-alt" },
   { name: "Postman", icon: "fas fa-envelope" },
-  // { name: "Redux", icon: "fas fa-exchange-alt" },
+  { name: "Agile", icon: "fas fa-tasks" },
+  { name: "Responsive Design", icon: "fas fa-mobile-alt" },
+  { name: "RESTful APIs", icon: "fas fa-cloud" },
 ];
 
 const SkillsGricComponent = () => {
@@ -39,21 +45,9 @@ const SkillsGricComponent = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const textVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
 
   return (
     <>
-      <motion.div
-        whileInView="visible"
-        initial="hidden"
-        variants={textVariant}
-        transition={{ duration: 0.5 }}
-      >
-        <Typography style={styles.subTitle}>My Skills</Typography>
-      </motion.div>
       <div style={skillsStyles.container(isMobile)}>
         {skills.map((skill, index) => (
           <motion.div

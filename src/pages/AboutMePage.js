@@ -20,10 +20,10 @@ const AboutMePage = () => {
         }}
         container
       >
-        <Grid style={styles.subContainer} xs={12} md={6}>
+        {/* <Grid style={styles.subContainer} xs={12} md={6}>
           <AboutComponent />
-        </Grid>
-        <Grid style={styles.subContainer} xs={12} md={6}>
+        </Grid> */}
+        <Grid style={styles.subContainer} xs={12}>
           <SkillsGridComponent />
         </Grid>
       </Grid>
