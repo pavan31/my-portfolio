@@ -61,7 +61,7 @@ const HeaderComponent = () => {
                   variant="h3"
                   sx={styles.menuItem}
                   onClick={() => {
-                    navigate(`/${item}`);
+                    navigate(`/`);
                     toggleModal();
                   }}
                 >
