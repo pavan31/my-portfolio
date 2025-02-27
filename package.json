@@ -18,6 +18,7 @@
     "react-parallax-tilt": "^1.7.284",
     "react-router-dom": "^7.0.1",
     "react-scripts": "5.0.1",
+    "react-type-animation": "^3.2.0",
     "styled-components": "^6.1.15",
     "swiper": "^11.2.4",
     "web-vitals": "^2.1.4"
