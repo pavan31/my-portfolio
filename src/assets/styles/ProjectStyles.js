@@ -41,6 +41,7 @@ const styles = {
     position: "relative",
     transformStyle: "preserve-3d",
     transition: "transform 0.6s",
+    boxSizing: "border-box",
   },
   cardFront: {
     position: "absolute",
@@ -84,6 +85,7 @@ const styles = {
     fontWeight: "bold",
     transform: "rotateY(180deg)",
     backfaceVisibility: "hidden",
+    boxSizing: "border-box",
   },
   // Media Queries
   "@media (min-width: 1024px)": {
@@ -95,6 +97,41 @@ const styles = {
     gridContainer: {
       padding: 12, // Reduce padding on mobile
     },
+  },
+  cardContent: {
+    width: "100%", // Takes full viewport width
+    minHeight: "100%", // Takes full viewport height
+    backgroundColor: "#000", // Black background
+    color: "#fff", // White text for contrast
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    // padding: "24px",
+    boxSizing: "border-box",
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: "20px",
+    marginBottom: "12px",
+    textAlign: "center",
+  },
+  cardDescription: {
+    fontSize: "16px",
+    color: "#ccc",
+    marginBottom: "16px",
+    textAlign: "center",
+    maxWidth: "80%",
+  },
+  cardLink: {
+    fontSize: "14px",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: "bold",
+    border: "1px solid white",
+    padding: "8px 16px",
+    borderRadius: "4px",
+    transition: "0.3s ease",
   },
 };
 
