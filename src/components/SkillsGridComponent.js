@@ -2,12 +2,16 @@ import React from "react";
 import { motion } from "framer-motion";
 import styles from "../assets/styles/AboutMePageStyles";
 
+const getGridTemplateColumns = (width) => {
+  if (width <= 768) return "repeat(2, 1fr)"; // Mobile
+  if (width <= 1024) return "repeat(3, 1fr)"; // Tablet
+  return "repeat(auto-fit, minmax(150px, 1fr))"; // Desktop
+};
+
 const skillsStyles = {
-  container: (isMobile) => ({
+  container: (width) => ({
     display: "grid",
-    gridTemplateColumns: isMobile
-      ? "repeat(2, 1fr)" // Two columns for mobile
-      : "repeat(auto-fit, minmax(150px, 1fr))",
+    gridTemplateColumns: getGridTemplateColumns(width),
     gap: "20px",
     width: "100%",
   }),
@@ -36,35 +40,32 @@ const skills = [
   { name: "RESTful APIs", icon: "fas fa-cloud" },
 ];
 
-const SkillsGricComponent = () => {
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+const SkillsGridComponent = () => {
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
 
-  // Add event listener to update `isMobile` on resize
   React.useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <>
-      <div style={skillsStyles.container(isMobile)}>
-        {skills.map((skill, index) => (
-          <motion.div
-            key={index}
-            style={styles.card}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-          >
-            <i className={skill.icon} style={styles.icon} />
-            <p style={styles.text}>{skill.name}</p>
-          </motion.div>
-        ))}
-      </div>
-    </>
+    <div style={skillsStyles.container(windowWidth)}>
+      {skills.map((skill, index) => (
+        <motion.div
+          key={index}
+          style={styles.card}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
+          <i className={skill.icon} style={styles.icon} />
+          <p style={styles.text}>{skill.name}</p>
+        </motion.div>
+      ))}
+    </div>
   );
 };
 
-export default SkillsGricComponent;
+export default SkillsGridComponent;
