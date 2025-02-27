@@ -121,7 +121,7 @@ const styles = {
     color: "#ccc",
     marginBottom: "16px",
     textAlign: "center",
-    maxWidth: "80%",
+    maxWidth: "95%",
   },
   cardLink: {
     fontSize: "14px",
