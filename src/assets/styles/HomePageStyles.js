@@ -2,8 +2,6 @@ const styles = {
   container: {
     width: "100%",
     boxSizing: "border-box",
-    // color: theme.colors.white,
-    // backgroundColor: theme.colors.black,
     overflowWrap: "anywhere",
   },
   contactInfoContainer: {
@@ -16,6 +14,7 @@ const styles = {
     height: "100%",
     boxSizing: "border-box",
     marginBottom: "50px",
+    paddingTop: "60px"
   },
   title: {
     boxSizing: "border-box",

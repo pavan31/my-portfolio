@@ -1,42 +1,84 @@
-import React from "react";
-import { motion } from "framer-motion";
-import styles from "../assets/styles/AboutMePageStyles";
-import { Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component";
+import "react-vertical-timeline-component/style.min.css";
+import { FaBriefcase, FaGraduationCap } from "react-icons/fa";
+import "../assets/styles/about.css";
 
-const AboutComponent = () => {
-  const textVariant = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
+const AboutMe = () => {
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = screenWidth <= 475;
 
   return (
-    <>
-      <motion.div
-        whileInView="visible"
-        initial="hidden"
-        variants={textVariant}
-        transition={{ duration: 0.5 }}
-      >
-        <Typography style={styles.subTitle}>who I am, what I do</Typography>
-      </motion.div>
-
-      {[
-        "I am a Software Development Engineer with a strong foundation in front-end technologies like React.js, React Native, and Angular, complemented by proficiency in back-end frameworks like Node.js and Express.js. My journey in software development has been driven by my love for solving complex problems and delivering impactful digital solutions.",
-        "Currently, I focus on creating reusable components, developing APIs, and ensuring web applications are responsive across devices. I thrive in collaborative environments, working closely with cross-functional teams to bring innovative ideas to life.",
-        "Beyond coding, I have a proven track record of managing projects, mentoring team members, and contributing to every stage of the development lifecycle from planning and designing to deployment and maintenance.",
-      ].map((text, index) => (
-        <motion.div
-          key={index}
-          whileInView="visible"
-          initial="hidden"
-          transition={{ duration: 0.5, delay: index * 0.3 }}
-          variants={textVariant}
+    <div
+      className="about-section"
+      style={{
+        padding: isMobile ? "16px" : "16px 32px",
+        boxSizing: "border-box"
+      }}
+    >
+      <h2 className="title">🚀 Building the Future, One Line of Code at a Time!</h2>
+      <p className="intro-text">
+      I'm <b>Pavan Seshu Kumar</b>, a passionate Full-Stack Developer with expertise in React, Next.js, and building scalable web applications. With years of experience in frontend and backend development, I focus on crafting seamless user experiences and delivering high-performance solutions.
+      </p>
+      <blockquote className="quote">"Code is more than syntax; it's a language that turns imagination into reality."</blockquote>
+      
+      <VerticalTimeline layout={isMobile ? "1-column-left" : "2-columns"}>
+        {/* Experience */}
+        <VerticalTimelineElement
+          iconStyle={{ background: "#061c43", color: "#fff" }}
+          contentStyle={{ border: "2px solid #061c43", boxShadow: "none" }}
+          contentArrowStyle={{ borderRight: "7px solid #061c43" }}
+          icon={<FaBriefcase />}
+          position={isMobile ? "left" : "left"}
         >
-          <Typography style={styles.aboutText}>{text}</Typography>
-        </motion.div>
-      ))}
-    </>
+          <p className="about-title">Software Development Engineer II</p>
+          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <p className="about-subtitle">Aspire Infolabs Global Pvt. Ltd </p>
+          <p className="about-subtitle">2018 - present </p>
+          </div>
+        </VerticalTimelineElement>
+
+        <VerticalTimelineElement
+          iconStyle={{ background: "#061c43", color: "#fff" }}
+          contentStyle={{ border: "2px solid #061c43", boxShadow: "none" }}
+          contentArrowStyle={{ borderRight: "7px solid #061c43" }}
+          icon={<FaBriefcase />}
+          position={isMobile ? "left" : "right"}
+        >
+          <p className="about-title">Internship</p>
+          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <p className="about-subtitle">Srushty Global Solutions Pvt Ltd</p>
+          <p className="about-subtitle">2017</p>
+          </div>
+        </VerticalTimelineElement>
+
+        {/* Education */}
+        <VerticalTimelineElement
+          iconStyle={{ background: "#061c43", color: "#fff" }}
+          contentStyle={{ border: "2px solid #061c43", boxShadow: "none" }}
+          contentArrowStyle={{ borderRight: "7px solid #061c43" }}
+          icon={<FaGraduationCap />}
+          position={isMobile ? "left" : "left"}
+        >
+          <p className="about-title">B.Tech in Computer Engineering</p>
+          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <p className="about-subtitle">IIITDM Kancheepuram</p>
+          <p className="about-subtitle">2012 - 2014</p>
+          </div>
+        </VerticalTimelineElement>
+
+      </VerticalTimeline>
+    </div>
   );
 };
 
-export default AboutComponent;
+export default AboutMe;
