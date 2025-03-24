@@ -41,9 +41,9 @@ const AboutMe = () => {
           position={isMobile ? "left" : "left"}
         >
           <p className="about-title">Software Development Engineer II</p>
-          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <div style={{display:"flex",  flexDirection: isMobile ? "column" : "row", justifyContent: "space-between"}}>
           <p className="about-subtitle">Aspire Infolabs Global Pvt. Ltd </p>
-          <p className="about-subtitle">2018 - present </p>
+          <p className="about-subtitle" style={{textAlign:"right"}}>2018 - present </p>
           </div>
         </VerticalTimelineElement>
 
@@ -55,9 +55,9 @@ const AboutMe = () => {
           position={isMobile ? "left" : "right"}
         >
           <p className="about-title">Internship</p>
-          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <div style={{display:"flex",  flexDirection: isMobile ? "column" : "row", justifyContent: "space-between"}}>
           <p className="about-subtitle">Srushty Global Solutions Pvt Ltd</p>
-          <p className="about-subtitle">2017</p>
+          <p className="about-subtitle" style={{textAlign:"right"}}>2017</p>
           </div>
         </VerticalTimelineElement>
 
@@ -70,9 +70,9 @@ const AboutMe = () => {
           position={isMobile ? "left" : "left"}
         >
           <p className="about-title">B.Tech in Computer Engineering</p>
-          <div style={{display:"flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <div style={{display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between"}}>
           <p className="about-subtitle">IIITDM Kancheepuram</p>
-          <p className="about-subtitle">2012 - 2014</p>
+          <p className="about-subtitle" style={{textAlign:"right"}}>2012 - 2014</p>
           </div>
         </VerticalTimelineElement>
 

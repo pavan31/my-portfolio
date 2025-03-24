@@ -3,6 +3,15 @@ import { TypeAnimation } from "react-type-animation";
 import "../assets/styles/Hero.css";
 
 export default function Hero() {
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      const navbarHeight = document.querySelector("header")?.offsetHeight || 80;
+      const topOffset = section.getBoundingClientRect().top + window.scrollY - navbarHeight;
+      window.scrollTo({ top: topOffset, behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="hero">
       <div className="hero-content">
@@ -30,12 +39,12 @@ export default function Hero() {
         </div>
 
         <div className="hero-buttons">
-          <a href="#projects" className="btn primary">
+          <button className="btn primary" onClick={() => scrollToSection("projects")}>
             View My Work
-          </a>
-          <a href="mailto:pavan@example.com" className="btn secondary">
+          </button>
+          <button className="btn secondary" onClick={() => scrollToSection("contact")}>
             Contact Me
-          </a>
+          </button>
         </div>
       </div>
 
