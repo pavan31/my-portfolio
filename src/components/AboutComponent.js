@@ -27,7 +27,7 @@ const AboutMe = () => {
     >
       <h2 className="title">🚀 Building the Future, One Line of Code at a Time!</h2>
       <p className="intro-text">
-      I'm <b>Pavan Seshu Kumar</b>, a passionate Full-Stack Developer with expertise in React, Next.js, and building scalable web applications. With years of experience in frontend and backend development, I focus on crafting seamless user experiences and delivering high-performance solutions.
+      I'm <b>Pavan Seshu Kumar</b>, a passionate Full-Stack Developer with expertise in React, Next.js, React Native, MongoDB, Express, and building scalable web applications. With years of experience in frontend and backend development, I focus on crafting seamless user experiences and delivering high-performance solutions.
       </p>
       <blockquote className="quote">"Code is more than syntax; it's a language that turns imagination into reality."</blockquote>
       
