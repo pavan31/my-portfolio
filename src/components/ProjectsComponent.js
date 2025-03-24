@@ -14,7 +14,7 @@ const projects = [
     id: 2,
     title: "CREDR - Application to Buy & Sell Used Bikes & Scooters",
     description:
-      "Elevated platform stability and functionality by resolving production bugs and integrating new URLs into the frontend environment. Led the development of a new internal tool feature, collaborating closely with backend counterparts for seamless API integration. Actively engaged in project meetings to proactively identify and tackle emerging challenges.",
+      "Elevated platform stability and functionality by resolving production bugs and integrating new URLs into the frontend environment. Led the development of a new internal tool feature, collaborating closely with backend counterparts for seamless API integration. Actively engaged in project meetings to identify and tackle emerging challenges.",
     link: "https://www.credr.com",
   },
   {

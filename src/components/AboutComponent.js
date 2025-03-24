@@ -25,7 +25,7 @@ const AboutMe = () => {
         boxSizing: "border-box"
       }}
     >
-      <h2 className="title">🚀 Building the Future, One Line of Code at a Time!</h2>
+      <h2 className="title">Building the Future, One Line of Code at a Time!</h2>
       <p className="intro-text">
       I'm <b>Pavan Seshu Kumar</b>, a passionate Full-Stack Developer with expertise in React, Next.js, React Native, MongoDB, Express, and building scalable web applications. With years of experience in frontend and backend development, I focus on crafting seamless user experiences and delivering high-performance solutions.
       </p>
@@ -72,7 +72,7 @@ const AboutMe = () => {
           <p className="about-title">B.Tech in Computer Engineering</p>
           <div style={{display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between"}}>
           <p className="about-subtitle">IIITDM Kancheepuram</p>
-          <p className="about-subtitle" style={{textAlign:"right"}}>2012 - 2014</p>
+          <p className="about-subtitle" style={{textAlign:"right"}}>2014 - 2018</p>
           </div>
         </VerticalTimelineElement>
 
