@@ -17,6 +17,7 @@ const headerStyles = {
     height: "100px",
     width: "140px",
     objectFit: "cover",
+    cursor: "pointer"
   },
   menuIcon: {
     fontSize: "50px",
