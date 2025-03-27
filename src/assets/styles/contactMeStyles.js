@@ -103,7 +103,7 @@ const styles = {
       color: "black",
     },
     padding: "10px 20px",
-    fontSize: "1rem",
+    fontSize: "20px",
   },
 };
 

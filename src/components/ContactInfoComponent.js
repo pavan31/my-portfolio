@@ -5,6 +5,7 @@ import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
 import { Box, Grid, Typography, Button } from "@mui/material";
+import resume from "../assets/files/Pavan-Resume.pdf";
 
 const slideInVariant = {
   hidden: { opacity: 0, x: -100 },
@@ -12,6 +13,18 @@ const slideInVariant = {
 };
 
 const ContactInfoComponent = () => {
+
+  const handleDownload = () => {
+    // Trigger a toast notification
+    // toast.success("Your download has started!");
+
+    // Create a link to download the PDF
+    const link = document.createElement("a");
+    link.href = resume; // Use the imported file
+    link.download = "Pavan-Resume.pdf"; // File name for the downloaded file
+    link.click();
+  };
+
   return (
     <Grid style={styles.contentBox}>
       {/* Phone Section */}
@@ -82,7 +95,7 @@ const ContactInfoComponent = () => {
         transition={{ duration: 0.5 }}
       >
         <Grid item xs={12} sx={styles.row}>
-          <Button variant="outlined" sx={styles.button}>
+          <Button variant="outlined" sx={styles.button} onClick={handleDownload}>
             Download Resume
           </Button>
         </Grid>
