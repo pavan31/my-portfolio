@@ -45,7 +45,6 @@
   max-width: 1000px;
   margin: 0 auto;
   line-height: 1.6;
-  white-space: nowrap;
 }
 
 /* Skills Grid */
@@ -182,6 +181,11 @@
     margin-bottom: 4rem;
   }
 
+  .section-subtitle {
+    font-size: 1rem;
+    max-width: 600px;
+  }
+
   .skills-grid-new {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 1rem;
@@ -213,7 +217,8 @@
   }
 
   .section-subtitle {
-    font-size: 1rem;
+    font-size: 0.875rem;
+    max-width: 400px;
   }
 
   .skills-grid-new {

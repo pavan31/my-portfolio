@@ -50,8 +50,8 @@ const ModernContact = () => {
     {
       icon: <HiMail />,
       title: 'Email',
-      value: 'poluparthipavanseshukumar6@gmail.com',
-      link: 'mailto:poluparthipavanseshukumar6@gmail.com',
+      value: 'poluparthipavanseshukumar@gmail.com',
+      link: 'mailto:poluparthipavanseshukumar@gmail.com',
     },
     {
       icon: <HiPhone />,
@@ -334,7 +334,7 @@ const ModernContact = () => {
         <motion.div className="contact-footer" variants={itemVariants}>
           <div className="footer-content">
             <p className="footer-text">
-              © 2024 Pavan Seshu Kumar. Built with React and lots of ☕
+              © 2025 Pavan Seshu Kumar. Built with React and lots of ☕
             </p>
             <div className="footer-links">
               <button
