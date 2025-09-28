@@ -1,0 +1,316 @@
+/* Modern Hero Section Styles */
+.modern-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  padding-top: 80px;
+}
+
+/* Background Elements */
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.3;
+  animation: float 20s infinite ease-in-out;
+}
+
+.gradient-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--color-primary-400), transparent);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.gradient-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--color-accent-purple), transparent);
+  top: 60%;
+  right: 20%;
+  animation-delay: 7s;
+}
+
+.gradient-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--color-accent-pink), transparent);
+  bottom: 20%;
+  left: 60%;
+  animation-delay: 14s;
+}
+
+.grid-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Floating Elements */
+.floating-element {
+  position: absolute;
+  color: var(--color-primary-400);
+  opacity: 0.1;
+  z-index: 2;
+}
+
+.floating-code {
+  top: 20%;
+  right: 15%;
+  font-size: 3rem;
+}
+
+.floating-sparkles {
+  bottom: 30%;
+  left: 10%;
+  font-size: 2.5rem;
+}
+
+/* Main Content */
+.hero-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Greeting */
+.hero-greeting {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.greeting-text {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Name */
+.hero-name {
+  position: relative;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.name-text {
+  background: linear-gradient(135deg, var(--color-text-primary), var(--color-primary-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 2;
+}
+
+.name-highlight {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary-400), var(--color-accent-purple));
+  border-radius: 2px;
+  z-index: 1;
+}
+
+/* Title */
+.hero-title {
+  margin-bottom: 2rem;
+  min-height: 3rem;
+}
+
+.title-text {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  color: var(--color-primary-400);
+  background: linear-gradient(135deg, var(--color-primary-400), var(--color-accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Description */
+.hero-description {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+/* Actions */
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+}
+
+
+
+/* Mouse Follower */
+.mouse-follower {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, var(--color-primary-400), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.modern-hero:hover .mouse-follower {
+  opacity: 0.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-container {
+    padding: 0 1rem;
+  }
+
+  .hero-name {
+    font-size: clamp(2rem, 8vw, 3rem);
+    white-space: normal;
+  }
+
+  .title-text {
+    font-size: clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .floating-code,
+  .floating-sparkles {
+    display: none;
+  }
+
+  .gradient-orb {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  .gradient-orb-1 {
+    width: 250px !important;
+    height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-stats {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .scroll-indicator {
+    bottom: 1rem;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .modern-hero {
+  background: var(--color-neutral-950);
+}
+
+[data-theme="light"] .modern-hero {
+  background: var(--color-neutral-50);
+}
+
+[data-theme="light"] .grid-pattern {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+[data-theme="light"] .gradient-orb-1 {
+  background: radial-gradient(circle, var(--color-primary-500), transparent);
+}
+
+[data-theme="light"] .gradient-orb-2 {
+  background: radial-gradient(circle, var(--color-accent-purple), transparent);
+}
+
+[data-theme="light"] .gradient-orb-3 {
+  background: radial-gradient(circle, var(--color-accent-pink), transparent);
+}
