@@ -59,14 +59,6 @@ const ModernAbout = () => {
     },
   ];
 
-  const skills = [
-    { name: 'React', level: 95 },
-    { name: 'JavaScript', level: 90 },
-    { name: 'Node.js', level: 85 },
-    { name: 'React Native', level: 88 },
-    { name: 'MongoDB', level: 82 },
-    { name: 'TypeScript', level: 80 },
-  ];
 
   return (
     <section ref={ref} className="modern-about" id="about">

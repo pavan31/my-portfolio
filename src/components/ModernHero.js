@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
-import { HiArrowDown, HiCode, HiSparkles } from 'react-icons/hi';
+import { HiCode, HiSparkles } from 'react-icons/hi';
 import './ModernHero.css';
 
 const ModernHero = () => {
@@ -25,12 +25,6 @@ const ModernHero = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const scrollToNext = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },

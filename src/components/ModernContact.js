@@ -101,23 +101,6 @@ const ModernContact = () => {
     }
   };
 
-  const socialLinks = [
-    {
-      name: 'LinkedIn',
-      url: 'https://linkedin.com/in/pavan-seshu-kumar',
-      icon: '💼',
-    },
-    {
-      name: 'GitHub',
-      url: 'https://github.com/pavan-seshu-kumar',
-      icon: '💻',
-    },
-    {
-      name: 'Twitter',
-      url: 'https://twitter.com/pavan_seshu',
-      icon: '🐦',
-    },
-  ];
 
   return (
     <section ref={ref} className="modern-contact" id="contact">
