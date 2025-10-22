@@ -58,7 +58,7 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="logo-text">PSK</span>
+            <span className="logo-text">PAVAN</span>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -121,7 +121,7 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mobile-menu-header">
-                <span className="mobile-logo">PSK</span>
+                <span className="mobile-logo">PAVAN</span>
                 <button
                   className="mobile-menu-close"
                   onClick={() => setIsMenuOpen(false)}

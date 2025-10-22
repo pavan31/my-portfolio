@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
-import { HiCode, HiSparkles } from 'react-icons/hi';
+import { HiCode, HiSparkles, HiDownload } from 'react-icons/hi';
 import './ModernHero.css';
 
 const ModernHero = () => {
@@ -55,6 +55,16 @@ const ModernHero = () => {
         ease: 'easeInOut',
       },
     },
+  };
+
+  const handleDownloadResume = () => {
+    // Create a link element to trigger download
+    const link = document.createElement('a');
+    link.href = '/Pavan-Seshu-Kumar-Resume-v10.pdf';
+    link.download = 'Pavan-Seshu-Kumar-Resume-v10.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -150,12 +160,13 @@ const ModernHero = () => {
             </motion.button>
 
             <motion.button
-              className="btn btn-secondary btn-lg"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="btn btn-ghost btn-lg"
+              onClick={handleDownloadResume}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Get In Touch
+              <HiDownload />
+              Download Resume
             </motion.button>
           </motion.div>
 
