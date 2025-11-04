@@ -1,7 +1,7 @@
 {
   "name": "my-portfolio",
   "version": "0.1.0",
-  "homepage": "https://pavan31.github.io/",
+  "homepage": "https://pavanseshukumar.github.io/",
   "private": true,
   "dependencies": {
     "emailjs-com": "^3.2.0",
