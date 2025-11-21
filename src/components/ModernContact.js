@@ -3,6 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { HiMail, HiPhone, HiLocationMarker, HiPaperAirplane, HiCheckCircle } from 'react-icons/hi';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import emailjs from 'emailjs-com';
+import emailjsConfig from '../config/emailjs.config';
 import './ModernContact.css';
 
 const ModernContact = () => {
@@ -80,14 +81,14 @@ const ModernContact = () => {
     setIsSubmitting(true);
 
     try {
-      // Get EmailJS credentials from environment variables
-      const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-      const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-      const userId = process.env.REACT_APP_EMAILJS_USER_ID;
+      // Get EmailJS credentials from environment variables or config file
+      const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID || emailjsConfig.serviceId;
+      const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || emailjsConfig.templateId;
+      const userId = process.env.REACT_APP_EMAILJS_USER_ID || emailjsConfig.userId;
 
-      // Validate that all required environment variables are set
+      // Validate that all required EmailJS credentials are set
       if (!serviceId || !templateId || !userId) {
-        throw new Error('EmailJS configuration is missing. Please check your environment variables.');
+        throw new Error('EmailJS configuration is missing. Please check your environment variables or config file.');
       }
 
       // Format template parameters for EmailJS

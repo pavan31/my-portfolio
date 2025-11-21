@@ -80,9 +80,55 @@ npm start
 - **"Failed to send message"**: Check that your EmailJS service is properly configured and active
 - **No email received**: Check your spam folder and verify your EmailJS service settings
 
+## GitHub Pages Deployment
+
+For GitHub Pages, environment variables from `.env` files won't work in production. You have two options:
+
+### Option 1: GitHub Actions with Secrets (Recommended)
+
+1. **Set up GitHub Secrets**:
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Secrets and variables** → **Actions**
+   - Click **New repository secret**
+   - Add these three secrets:
+     - `REACT_APP_EMAILJS_SERVICE_ID` (your service ID)
+     - `REACT_APP_EMAILJS_TEMPLATE_ID` (your template ID)
+     - `REACT_APP_EMAILJS_USER_ID` (your user ID)
+
+2. **GitHub Actions Workflow**:
+   - A workflow file (`.github/workflows/deploy.yml`) has already been created
+   - This workflow will automatically build and deploy when you push to the `main` branch
+   - The workflow uses the secrets you just created
+
+3. **Deploy**:
+   - Push your code to the `main` branch
+   - GitHub Actions will automatically build and deploy
+   - Check the **Actions** tab in your repository to see the deployment status
+
+4. **Disable manual deployment** (optional):
+   - If you're using GitHub Actions, you can remove the `deploy` script from `package.json` or keep it as a backup
+
+### Option 2: Direct Configuration (Alternative)
+
+If you prefer not to use GitHub Actions, you can directly edit `src/config/emailjs.config.js`:
+
+1. Open `src/config/emailjs.config.js`
+2. Replace the empty strings with your actual EmailJS credentials:
+   ```javascript
+   const emailjsConfig = {
+     serviceId: 'your_service_id_here',
+     templateId: 'your_template_id_here',
+     userId: 'your_user_id_here',
+   };
+   ```
+3. Commit and push the changes
+
+**Note**: EmailJS public keys (User ID) are safe to expose in your code, but using GitHub Secrets is still the recommended approach.
+
 ## Security Notes
 
 - Never commit your `.env` file to version control
 - The `.env` file is already in `.gitignore`
-- For production builds, set these environment variables in your hosting platform (GitHub Pages, Netlify, Vercel, etc.)
+- For GitHub Pages, use GitHub Actions with secrets (Option 1) for the most secure approach
+- EmailJS public keys are designed to be public, but keeping them in secrets is still best practice
 
