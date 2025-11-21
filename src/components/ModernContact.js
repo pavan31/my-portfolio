@@ -80,22 +80,47 @@ const ModernContact = () => {
     setIsSubmitting(true);
 
     try {
-      // Replace with your EmailJS service details
+      // Get EmailJS credentials from environment variables
+      const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+      const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+      const userId = process.env.REACT_APP_EMAILJS_USER_ID;
+
+      // Validate that all required environment variables are set
+      if (!serviceId || !templateId || !userId) {
+        throw new Error('EmailJS configuration is missing. Please check your environment variables.');
+      }
+
+      // Format template parameters for EmailJS
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_name: 'Pavan Seshu Kumar', // Your name
+      };
+
+      // Send email using EmailJS
       const result = await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
-        formData,
-        'YOUR_USER_ID'
+        serviceId,
+        templateId,
+        templateParams,
+        userId
       );
 
       console.log('Email sent successfully:', result);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
     } catch (error) {
       console.error('Error sending email:', error);
-      // For demo purposes, we'll simulate success
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      alert(
+        error.message || 
+        'Failed to send message. Please try again later or contact me directly at poluparthipavanseshukumar@gmail.com'
+      );
     } finally {
       setIsSubmitting(false);
     }
