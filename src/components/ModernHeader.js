@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenu, HiX, HiSun, HiMoon } from 'react-icons/hi';
-import './ModernHeader.css';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { HiMenu, HiX, HiSun, HiMoon } from "react-icons/hi";
+import "./ModernHeader.css";
 
 const ModernHeader = ({ activeSection, scrollToSection }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   const toggleMenu = () => {
@@ -35,28 +35,27 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
   };
 
   const navItems = [
-    { id: 'hero', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'contact', label: 'Contact' },
+    { id: "hero", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "projects", label: "Projects" },
+    { id: "contact", label: "Contact" },
   ];
 
   return (
     <>
       <motion.header
-        className={`modern-header ${isScrolled ? 'scrolled' : ''}`}
+        className={`modern-header ${isScrolled ? "scrolled" : ""}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
       >
         <div className="header-container">
           {/* Logo */}
           <motion.div
             className="logo"
-            onClick={() => scrollToSection('hero')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            onClick={() => scrollToSection("hero")}
+            whileTap={{ scale: 0.98 }}
           >
             <span className="logo-text">PAVAN</span>
           </motion.div>
@@ -66,10 +65,11 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
             {navItems.map((item) => (
               <motion.button
                 key={item.id}
-                className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
+                className={`nav-item ${
+                  activeSection === item.id ? "active" : ""
+                }`}
                 onClick={() => handleNavClick(item.id)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {item.label}
               </motion.button>
@@ -81,18 +81,16 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
             <motion.button
               className="theme-toggle"
               onClick={toggleTheme}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <HiSun /> : <HiMoon />}
+              {theme === "dark" ? <HiSun /> : <HiMoon />}
             </motion.button>
 
             <motion.button
               className="mobile-menu-toggle"
               onClick={toggleMenu}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <HiX /> : <HiMenu />}
@@ -114,10 +112,10 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
           >
             <motion.div
               className="mobile-menu"
-              initial={{ x: '100%' }}
+              initial={{ x: "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mobile-menu-header">
@@ -135,13 +133,14 @@ const ModernHeader = ({ activeSection, scrollToSection }) => {
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.id}
-                    className={`mobile-nav-item ${activeSection === item.id ? 'active' : ''}`}
+                    className={`mobile-nav-item ${
+                      activeSection === item.id ? "active" : ""
+                    }`}
                     onClick={() => handleNavClick(item.id)}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 10 }}
-                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.05, duration: 0.15 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {item.label}
                   </motion.button>

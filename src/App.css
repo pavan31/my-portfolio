@@ -1,4 +1,4 @@
-/* Modern Portfolio App Styles */
+/* E-ink Portfolio App Styles */
 .App {
   width: 100%;
   min-height: 100vh;
@@ -21,14 +21,14 @@ html {
   box-sizing: border-box;
 }
 
-/* Focus styles for accessibility */
+/* Focus styles for accessibility - E-ink */
 *:focus-visible {
-  outline: 2px solid var(--color-primary-400);
+  outline: 1px solid var(--color-text-primary);
   outline-offset: 2px;
 }
 
-/* Selection styles */
+/* Selection styles - E-ink inverted */
 ::selection {
-  background-color: var(--color-primary-400);
-  color: white;
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
 }

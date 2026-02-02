@@ -1,64 +1,65 @@
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { HiCode, HiLightBulb, HiHeart, HiTrendingUp } from 'react-icons/hi';
-import './ModernAbout.css';
+import React, { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { HiCode, HiLightBulb, HiHeart, HiTrendingUp } from "react-icons/hi";
+import "./ModernAbout.css";
 
 const ModernAbout = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.6,
-        staggerChildren: 0.2,
+        duration: 0.2,
+        staggerChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
+      transition: { duration: 0.15, ease: "easeOut" },
     },
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5, ease: 'easeOut' },
+      transition: { duration: 0.15, ease: "easeOut" },
     },
   };
 
   const values = [
     {
       icon: <HiCode />,
-      title: 'Clean Code',
-      description: 'I believe in writing maintainable, scalable, and efficient code that stands the test of time.',
+      title: "Clean Code",
+      description:
+        "I believe in writing maintainable, scalable, and efficient code that stands the test of time.",
     },
     {
       icon: <HiLightBulb />,
-      title: 'Innovation',
-      description: 'Always exploring new technologies and approaches to solve problems in creative ways.',
+      title: "Innovation",
+      description:
+        "Always exploring new technologies and approaches to solve problems in creative ways.",
     },
     {
       icon: <HiHeart />,
-      title: 'Passion',
-      description: 'Driven by genuine enthusiasm for technology and the impact it can have on people\'s lives.',
+      title: "Passion",
+      description:
+        "Driven by genuine enthusiasm for technology and the impact it can have on people's lives.",
     },
     {
       icon: <HiTrendingUp />,
-      title: 'Growth',
-      description: 'Continuously learning and evolving to stay at the forefront of technology trends.',
+      title: "Growth",
+      description:
+        "Continuously learning and evolving to stay at the forefront of technology trends.",
     },
   ];
-
 
   return (
     <section ref={ref} className="modern-about" id="about">
@@ -85,22 +86,24 @@ const ModernAbout = () => {
                 Building the Future, One Line of Code at a Time
               </h3>
               <p className="about-description">
-                I'm <strong>Pavan Seshu Kumar</strong>, a passionate Full-Stack Developer with
-                expertise in React, Next.js, React Native, MongoDB, Express, and building
-                scalable web applications. With years of experience in frontend and backend
-                development, I focus on crafting seamless user experiences and delivering
+                I'm <strong>Pavan Seshu Kumar</strong>, a passionate Full-Stack
+                Developer with expertise in React, Next.js, React Native,
+                MongoDB, Express, and building scalable web applications. With
+                years of experience in frontend and backend development, I focus
+                on crafting seamless user experiences and delivering
                 high-performance solutions.
               </p>
               <p className="about-description">
-                My journey in technology is driven by curiosity and a desire to create
-                meaningful impact. I believe that great software isn't just about functionality—it's
-                about creating experiences that users love and that solve real-world problems.
+                My journey in technology is driven by curiosity and a desire to
+                create meaningful impact. I believe that great software isn't
+                just about functionality—it's about creating experiences that
+                users love and that solve real-world problems.
               </p>
               <blockquote className="about-quote">
-                "Code is more than syntax; it's a language that turns imagination into reality."
+                "Code is more than syntax; it's a language that turns
+                imagination into reality."
               </blockquote>
             </div>
-
           </motion.div>
 
           {/* Values Cards */}
@@ -114,12 +117,9 @@ const ModernAbout = () => {
                   variants={cardVariants}
                   initial="hidden"
                   animate={isInView ? "visible" : "hidden"}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ delay: index * 0.05 }}
                 >
-                  <div className="value-icon">
-                    {value.icon}
-                  </div>
+                  <div className="value-icon">{value.icon}</div>
                   <h5 className="value-title">{value.title}</h5>
                   <p className="value-description">{value.description}</p>
                 </motion.div>
@@ -137,13 +137,16 @@ const ModernAbout = () => {
               variants={cardVariants}
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
-              transition={{ delay: 0.2 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              transition={{ delay: 0.1 }}
             >
               <div className="experience-badge">Current</div>
               <div className="experience-header">
-                <h5 className="experience-position">Software Development Engineer II</h5>
-                <span className="experience-company">Aspire Infolabs Global Pvt. Ltd</span>
+                <h5 className="experience-position">
+                  Software Development Engineer II
+                </h5>
+                <span className="experience-company">
+                  Aspire Infolabs Global Pvt. Ltd
+                </span>
               </div>
               <div className="experience-period">2018 - Present</div>
               <div className="experience-highlights">
@@ -163,12 +166,13 @@ const ModernAbout = () => {
               variants={cardVariants}
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
-              transition={{ delay: 0.4 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              transition={{ delay: 0.15 }}
             >
               <div className="experience-header">
                 <h5 className="experience-position">Internship</h5>
-                <span className="experience-company">Srushty Global Solutions Pvt Ltd</span>
+                <span className="experience-company">
+                  Srushty Global Solutions Pvt Ltd
+                </span>
               </div>
               <div className="experience-period">2017</div>
               <div className="experience-highlights">
@@ -176,8 +180,8 @@ const ModernAbout = () => {
                 <span className="highlight-tag">Industry Exposure</span>
               </div>
               <p className="experience-description">
-                Gained hands-on experience in software development and
-                learned industry best practices in a professional environment.
+                Gained hands-on experience in software development and learned
+                industry best practices in a professional environment.
               </p>
             </motion.div>
 
@@ -186,11 +190,12 @@ const ModernAbout = () => {
               variants={cardVariants}
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
-              transition={{ delay: 0.6 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              transition={{ delay: 0.2 }}
             >
               <div className="experience-header">
-                <h5 className="experience-position">B.Tech in Computer Engineering</h5>
+                <h5 className="experience-position">
+                  B.Tech in Computer Engineering
+                </h5>
                 <span className="experience-company">IIITDM Kancheepuram</span>
               </div>
               <div className="experience-period">2014 - 2018</div>
@@ -200,8 +205,8 @@ const ModernAbout = () => {
                 <span className="highlight-tag">Software Engineering</span>
               </div>
               <p className="experience-description">
-                Solid foundation in computer science principles,
-                algorithms, and software engineering methodologies.
+                Solid foundation in computer science principles, algorithms, and
+                software engineering methodologies.
               </p>
             </motion.div>
           </div>

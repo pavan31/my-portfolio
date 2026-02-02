@@ -1,55 +1,40 @@
-/* Modern Header Styles */
+/* E-ink Header Styles */
 .modern-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  transition: none;
 }
 
 .modern-header.scrolled {
-  background: rgba(10, 10, 10, 0.95);
-  border-bottom-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Light mode styles */
-[data-theme="light"] .modern-header {
-  background: rgba(255, 255, 255, 0.8);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .modern-header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .header-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 2rem;
+  padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Logo */
+/* Logo - E-ink simple */
 .logo {
   cursor: pointer;
   user-select: none;
 }
 
 .logo-text {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.02em;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: 0.05em;
+  font-family: var(--font-family-primary);
 }
 
 /* Desktop Navigation */
@@ -64,34 +49,21 @@
   border: none;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  padding: 0.5rem 0;
+  transition: opacity 0.15s ease;
   position: relative;
+  font-family: var(--font-family-primary);
 }
 
 .nav-item:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.7;
 }
 
 .nav-item.active {
-  color: var(--color-primary-400);
-  background: rgba(14, 165, 233, 0.1);
-}
-
-.nav-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: -0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background: var(--color-primary-400);
-  border-radius: 50%;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-text-primary);
 }
 
 /* Header Actions */
@@ -104,12 +76,11 @@
 .theme-toggle,
 .mobile-menu-toggle {
   background: none;
-  border: none;
-  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,14 +95,13 @@
 
 .theme-toggle:hover,
 .mobile-menu-toggle:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.7;
 }
 
 .theme-toggle svg,
 .mobile-menu-toggle svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 /* Mobile Menu Overlay */
@@ -141,9 +111,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 2000;
+}
+
+[data-theme="light"] .mobile-menu-overlay {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .mobile-menu {
@@ -152,17 +125,11 @@
   right: 0;
   bottom: 0;
   width: 320px;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-primary);
   border-left: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   padding: 2rem;
-}
-
-/* Light mode mobile menu */
-[data-theme="light"] .mobile-menu {
-  background: var(--color-bg-secondary);
-  border-left-color: var(--color-border);
 }
 
 .mobile-menu-header {
@@ -175,22 +142,20 @@
 }
 
 .mobile-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: 0.05em;
+  font-family: var(--font-family-primary);
 }
 
 .mobile-menu-close {
   background: none;
-  border: none;
-  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,13 +164,12 @@
 }
 
 .mobile-menu-close:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.7;
 }
 
 .mobile-menu-close svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 /* Mobile Navigation */
@@ -220,36 +184,24 @@
   background: none;
   border: none;
   color: var(--color-text-secondary);
-  font-size: 1.125rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 400;
   cursor: pointer;
   padding: 1rem 0;
   text-align: left;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease;
   position: relative;
+  font-family: var(--font-family-primary);
+  border-bottom: 1px solid transparent;
 }
 
 .mobile-nav-item:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.7;
 }
 
 .mobile-nav-item.active {
-  color: var(--color-primary-400);
-  background: rgba(14, 165, 233, 0.1);
-}
-
-.mobile-nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 20px;
-  background: var(--color-primary-400);
-  border-radius: 2px;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-text-primary);
 }
 
 .mobile-menu-footer {
@@ -259,7 +211,7 @@
 }
 
 .mobile-menu-text {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   text-align: center;
   font-style: italic;
@@ -297,7 +249,7 @@
   }
 
   .mobile-nav-item {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     padding: 0.875rem 0;
   }
 }

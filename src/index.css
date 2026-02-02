@@ -25,16 +25,16 @@ section {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #fff;
+  background: var(--color-bg-primary);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #000;
-  border-radius: 10px
+  background: var(--color-text-primary);
+  border-radius: 0;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #000;
+  background: var(--color-text-primary);
 }
