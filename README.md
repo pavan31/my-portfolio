@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# pavanseshukumar.github.io
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Personal portfolio for **Pavan Seshu Kumar** — a full-stack engineer in
+Visakhapatnam, India.
 
-## Available Scripts
+Built as a single scrolling experience: a pointer-lit wordmark, a manifesto
+that resolves word by word as you read it, skills set as a typographic ledger,
+a horizontally-scrolling project reel, and a year odometer for the career
+timeline.
 
-In the project directory, you can run:
+**Live:** https://pavanseshukumar.github.io
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Concern | Choice |
+| --- | --- |
+| Framework | Next.js 16 (App Router, static export) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 (CSS-first `@theme` tokens) |
+| Component motion | Motion (`motion/react`) |
+| Scroll choreography | GSAP + ScrollTrigger |
+| Smooth scrolling | Lenis |
+| Icons | Lucide |
+| Contact delivery | EmailJS, with a `mailto:` fallback |
 
-### `npm test`
+The site is a **static export** (`output: "export"` in `next.config.ts`).
+GitHub Pages serves plain files, so there is no Node runtime, no image
+optimisation server and no server actions. `images.unoptimized` is required
+for the same reason.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Commands
 
-### `npm run build`
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # static export into ./out
+npm run typecheck
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`npm run build` writes the whole site to `out/`, including `robots.txt`,
+`sitemap.xml`, the 404 page and a generated Open Graph image.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Project layout
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+  app/
+    layout.tsx        metadata, fonts, JSON-LD Person schema, page chrome
+    page.tsx          section order
+    globals.css       design tokens, fluid type scale, motion fallbacks
+    og.png/route.tsx  Open Graph image, generated at build time
+    robots.ts         /robots.txt
+    sitemap.ts        /sitemap.xml
+    not-found.tsx     exported as 404.html
+  components/
+    chrome/           Navigation, Preloader, ScrollProgress, SectionRail, Footer
+    motion/           Reveal, TextReveal, MagneticButton, Parallax,
+                      SectionHeading, Counter, Marquee, CustomCursor, SmoothScroll
+    sections/         Hero, Index, Stack, Work, Trajectory, Contact
+    visuals/          ProjectPlate (generated per-project SVG motifs)
+  lib/
+    data/             site, projects, skills, experience, socials
+    hooks/            useMediaQuery, useGSAP, useLocalTime, …
+    scroll.ts         Lenis handle + anchor scrolling
+```
 
-### `npm run eject`
+### Editing content
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+All copy and data live in `src/lib/data/` — nothing is hardcoded in the
+components. To change what the site says, edit these and nothing else:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `site.ts` — name, role, contact details, location, ticker strips, the
+  manifesto statement and which phrases it highlights
+- `projects.ts` — the work reel; `motif` picks one of seven generated SVG
+  plates (`arc`, `grid`, `wave`, `orbit`, `strata`, `pulse`, `mesh`)
+- `skills.ts` — the stack ledger, grouped by where each tool sits
+- `experience.ts` — the trajectory entries and their odometer years
+- `socials.ts` — profile links
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Counters in the Index section are derived, not typed in: years of experience
+come from `CAREER_START_YEAR`, and the product and tool counts come from the
+lengths of `projects` and `skills`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contact form
 
-## Learn More
+The form posts through EmailJS using three public keys, read at build time:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+NEXT_PUBLIC_EMAILJS_SERVICE_ID
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Put them in `.env.local` for local development. **If they are absent the form
+still works** — it falls back to opening a prefilled `mailto:` instead of
+failing, so a fresh clone always has a working route to the inbox.
 
-### Code Splitting
+The EmailJS template receives `from_name`, `from_email`, `subject`, `message`
+and `to_name`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Deployment
 
-### Analyzing the Bundle Size
+`.github/workflows/deploy.yml` builds on every push to `main` and publishes
+`out/` to the `gh-pages` branch.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Two details matter for GitHub Pages:
 
-### Making a Progressive Web App
+- **`.nojekyll`** is written into `out/` by the workflow. Without it Pages
+  strips the `_next` directory, because Jekyll ignores paths beginning with an
+  underscore, and the site loads with no CSS or JavaScript.
+- **The Open Graph image is served from `/og.png`**, not from Next's
+  conventional `opengraph-image` route. That route exports to a file with no
+  extension, which Pages serves as `application/octet-stream` — enough for
+  most social crawlers to reject the preview.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The workflow reads the new `NEXT_PUBLIC_EMAILJS_*` repository secrets and
+falls back to the original `REACT_APP_EMAILJS_*` names, so existing secrets
+keep working.
 
-### Advanced Configuration
+## Accessibility and motion
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `prefers-reduced-motion` is honoured throughout: the preloader is skipped,
+  the horizontal pin is not installed, scroll-linked parallax is disabled and
+  the pointer-lit wordmark renders as solid type.
+- The custom cursor is desktop-only, and only on fine pointers.
+- Split-text animations keep their full string available to screen readers via
+  `aria-label`, with the per-character markup hidden.
+- The page has one `h1`, a skip link, and visible focus rings.

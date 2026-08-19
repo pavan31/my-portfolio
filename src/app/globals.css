@@ -1,0 +1,335 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens
+ * ------------------------------------------------------------------ */
+@theme {
+  --color-void: #050505;
+  --color-surface: #0a0a0a;
+  --color-ink: #f5f5f0;
+  --color-muted: #777777;
+  --color-accent: #b7ff3c;
+
+  /* Derived neutrals. `dim` is the unlit state of oversized display type. */
+  --color-dim: #1a1a18;
+  --color-line: rgba(245, 245, 240, 0.11);
+  --color-line-soft: rgba(245, 245, 240, 0.06);
+  --color-ink-60: rgba(245, 245, 240, 0.6);
+  --color-accent-dim: rgba(183, 255, 60, 0.14);
+
+  --font-display: var(--font-bricolage), "Arial Black", system-ui, sans-serif;
+  --font-sans: var(--font-instrument), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Fluid scale — every heading size is viewport-derived, never stepped. */
+  --text-mega: clamp(3.5rem, 17vw, 19rem);
+  --text-mega--line-height: 0.8;
+  --text-mega--letter-spacing: -0.045em;
+
+  --text-display: clamp(2.5rem, 8.5vw, 8.5rem);
+  --text-display--line-height: 0.86;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-headline: clamp(1.875rem, 5.5vw, 4.75rem);
+  --text-headline--line-height: 0.94;
+  --text-headline--letter-spacing: -0.03em;
+
+  --text-title: clamp(1.375rem, 3.2vw, 2.75rem);
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.02em;
+
+  --text-lead: clamp(1.0625rem, 1.7vw, 1.5rem);
+  --text-lead--line-height: 1.5;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.2;
+  --text-micro--letter-spacing: 0.18em;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    /* Rendering hairlines at sub-pixel widths needs the extra precision. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    background-color: var(--color-void);
+    color-scheme: dark;
+    /* Lenis drives scrolling; native smooth scroll would fight it. */
+    scroll-behavior: auto;
+    /*
+     * Must sit on the root, not just body: any horizontal overflow widens the
+     * initial containing block, which drags every position:fixed element
+     * (the header included) off the right edge of a phone screen.
+     * `clip` rather than `hidden` so position:sticky keeps working.
+     */
+    overflow-x: clip;
+    /*
+     * Keeps the scrollbar's space reserved even while an overlay sets
+     * `overflow: hidden`, so opening the index panel does not shift the page
+     * (or the fixed header) sideways by the scrollbar's width.
+     */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Only suppress the native cursor once the custom one is actually mounted. */
+  html.cursor-custom,
+  html.cursor-custom * {
+    cursor: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-void);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #232320;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilities
+ * ------------------------------------------------------------------ */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Page gutters — one definition so every section aligns to the same grid. */
+@utility gutter {
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+  @media (width >= 90rem) {
+    padding-inline: 4rem;
+  }
+}
+
+@utility hairline {
+  border-top: 1px solid var(--color-line);
+}
+
+/* Clips a child block to its own box so a mask reveal has an edge to cross. */
+@utility reveal-clip {
+  overflow: hidden;
+  display: block;
+}
+
+/* ------------------------------------------------------------------ *
+ * Effects
+ * ------------------------------------------------------------------ */
+
+/*
+ * Overlay scroll region. Deliberately quieter than the page scrollbar: still
+ * visible enough to signal that there is more below, but not a chrome element
+ * competing with the type.
+ */
+.panel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 245, 240, 0.2) transparent;
+}
+
+.panel-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.panel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panel-scroll::-webkit-scrollbar-thumb {
+  background: rgba(245, 245, 240, 0.2);
+  border-radius: 3px;
+}
+.panel-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Film grain — one fixed overlay for the whole document. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: transform;
+  animation: grain-drift 7s steps(6) infinite;
+}
+
+@keyframes grain-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  16% {
+    transform: translate3d(-3%, 2%, 0);
+  }
+  33% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  50% {
+    transform: translate3d(-2%, 4%, 0);
+  }
+  66% {
+    transform: translate3d(3%, 1%, 0);
+  }
+  83% {
+    transform: translate3d(-1%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/*
+ * The hero's lit typography. The text is filled with a radial gradient whose
+ * centre tracks the pointer, so letterforms brighten only where the light
+ * falls. --lx/--ly are written by rAF on the parent, never through React.
+ */
+.lit-text {
+  --lx: 50%;
+  --ly: 50%;
+  --lit-radius: 30rem;
+  background-image: radial-gradient(
+    circle var(--lit-radius) at var(--lx) var(--ly),
+    var(--color-accent) 0%,
+    var(--color-ink) 26%,
+    var(--color-dim) 62%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* On a phone the light has to be smaller than the type, or it just floods it. */
+@media (width < 48rem) {
+  .lit-text {
+    --lit-radius: 11rem;
+  }
+}
+
+/*
+ * The hero wordmark is bounded by viewport *height* as well as width —
+ * sized on width alone, three lines push the statement and buttons off a
+ * laptop screen. Phones get a much larger share of the width, since the
+ * staircase indents collapse there and the full measure is available.
+ */
+.hero-name {
+  font-size: clamp(3.5rem, min(17vw, 20.5vh), 18rem);
+}
+
+@media (width < 48rem) {
+  .hero-name {
+    font-size: min(23vw, 14vh);
+  }
+}
+
+/*
+ * Short phones: give the statement and buttons back their room. Sized with
+ * headroom rather than to the pixel — the reserved scrollbar gutter and a
+ * single extra line of wrapped body copy are enough to push the buttons under
+ * the fold when this is set to just barely fit.
+ */
+@media (width < 48rem) and (height < 44rem) {
+  .hero-name {
+    font-size: min(17.5vw, 11vh);
+  }
+}
+
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .lit-text {
+    color: var(--color-ink);
+  }
+}
+
+/* Rules that draw themselves from nothing when their section is reached. */
+.rule-draw {
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+@keyframes marquee-track {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Reduced motion — collapse every decorative animation, keep the content.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .grain::after {
+    animation: none;
+  }
+
+  .lit-text {
+    background-image: none;
+    color: var(--color-ink);
+  }
+
+  .rule-draw {
+    transform: scaleX(1);
+  }
+}
