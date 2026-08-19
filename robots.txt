@@ -1,3 +1,5 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
+User-Agent: *
+Allow: /
+
+Host: https://pavanseshukumar.github.io
+Sitemap: https://pavanseshukumar.github.io/sitemap.xml
