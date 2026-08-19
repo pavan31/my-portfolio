@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@/lib/hooks/useGSAP";
-import { CAREER_START_YEAR, manifesto, site } from "@/lib/data/site";
+import { EXPERIENCE_YEARS, manifesto, site } from "@/lib/data/site";
 import { projects } from "@/lib/data/projects";
 import { skills } from "@/lib/data/skills";
 import { Counter } from "@/components/motion/Counter";
@@ -51,7 +51,7 @@ export function Index() {
   const reducedMotion = usePrefersReducedMotion();
 
   const tokens = tokenise(manifesto.statement, manifesto.accents);
-  const years = new Date().getFullYear() - CAREER_START_YEAR;
+  const years = EXPERIENCE_YEARS;
 
   useGSAP(
     () => {

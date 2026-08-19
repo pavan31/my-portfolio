@@ -5,6 +5,14 @@
 
 export const CAREER_START_YEAR = 2018;
 
+/**
+ * Stated experience, in years. Deliberately an explicit figure rather than
+ * `currentYear - CAREER_START_YEAR`, which counts from the first full-time
+ * role and reads high. Every surface that quotes a number reads it from here,
+ * so the site cannot contradict itself.
+ */
+export const EXPERIENCE_YEARS = 6;
+
 export const site = {
   name: "Pavan Seshu Kumar",
   shortName: "Pavan",
@@ -42,6 +50,27 @@ export const site = {
   ],
 } as const;
 
+/**
+ * Hero content. The wordmark is split into the two groups the scroll
+ * transition drives apart, so the composition and the animation read from the
+ * same definition rather than duplicating the name as literals.
+ */
+export const hero = {
+  wordmark: {
+    lead: ["Pavan"],
+    trail: ["Seshu", "Kumar"],
+  },
+  discipline: "Full stack developer",
+  experience: `${EXPERIENCE_YEARS}+ years experience`,
+  stack: "React / Next.js / Java / Node / AWS",
+  based: "Based in India",
+  /** Teaser for the section the hero hands over to. */
+  outro: {
+    kicker: "Next",
+    title: "About me",
+  },
+} as const;
+
 /** Ticker strips — connective tissue between sections, not decoration. */
 export const tickers = {
   disciplines: [
@@ -75,7 +104,7 @@ export type SectionId = (typeof sections)[number]["id"];
 /** Words the manifesto highlights in accent as they resolve on scroll. */
 export const manifesto = {
   statement:
-    "I build the parts people actually touch — and the parts that hold them up. Eight years across healthcare, commerce and subsea engineering have taught me that the interface is the product, and that nothing ships unless the layer beneath it is boring, predictable and fast.",
+    "I build the parts people actually touch — and the parts that hold them up. Work across healthcare, commerce and subsea engineering has taught me that the interface is the product, and that nothing ships unless the layer beneath it is boring, predictable and fast.",
   accents: ["the interface is the product", "boring, predictable and fast"],
   supporting: [
     "I work end to end: React and Next.js on the front, React Native where the product lives in a pocket, Node, Spring Boot and GraphQL behind it. I lead small teams, review hard, and prefer the solution that is still legible six months later.",

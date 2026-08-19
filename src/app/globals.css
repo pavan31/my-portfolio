@@ -258,31 +258,141 @@
   }
 }
 
+/* ------------------------------------------------------------------ *
+ * Hero stage
+ * ------------------------------------------------------------------ */
+
 /*
- * The hero wordmark is bounded by viewport *height* as well as width —
- * sized on width alone, three lines push the statement and buttons off a
- * laptop screen. Phones get a much larger share of the width, since the
- * staircase indents collapse there and the full measure is available.
+ * Mouse parallax bus. A single rAF writes --mx/--my (normalised -1..1) onto
+ * the stage; every layer reads them through calc() with its own --depth, so
+ * the whole composition moves from one property write per frame instead of
+ * one JS transform per layer.
  */
-.hero-name {
-  font-size: clamp(3.5rem, min(17vw, 20.5vh), 18rem);
+.hero-stage {
+  --mx: 0;
+  --my: 0;
 }
 
-@media (width < 48rem) {
-  .hero-name {
-    font-size: min(23vw, 14vh);
+.hero-depth {
+  transform: translate3d(
+    calc(var(--mx) * var(--depth, 0px)),
+    calc(var(--my) * var(--depth, 0px)),
+    0
+  );
+}
+
+/*
+ * Technical grid: a fine module with a coarser one over it. Kept near the
+ * threshold of visibility — it should register as texture, not as a pattern.
+ */
+.hero-grid {
+  --module: clamp(28px, 3.4vw, 52px);
+  background-image:
+    linear-gradient(to right, rgba(245, 245, 240, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 245, 240, 0.055) 1px, transparent 1px),
+    linear-gradient(to right, rgba(245, 245, 240, 0.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 245, 240, 0.022) 1px, transparent 1px);
+  background-size:
+    calc(var(--module) * 4) 100%,
+    100% calc(var(--module) * 4),
+    var(--module) 100%,
+    100% var(--module);
+  /* Fades before it reaches any edge, so the hero stays mostly black. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 64% at 50% 45%,
+    #000 8%,
+    transparent 76%
+  );
+  mask-image: radial-gradient(
+    ellipse 78% 64% at 50% 45%,
+    #000 8%,
+    transparent 76%
+  );
+}
+
+/* The faint radial drift. Neutral, not a glow — no colour, very low alpha. */
+.hero-halo {
+  background: radial-gradient(
+    closest-side,
+    rgba(245, 245, 240, 0.055),
+    transparent 100%
+  );
+  will-change: transform;
+  animation: hero-halo-drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes hero-halo-drift {
+  from {
+    transform: translate3d(-9%, -5%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(9%, 7%, 0) scale(1.18);
   }
 }
 
 /*
- * Short phones: give the statement and buttons back their room. Sized with
- * headroom rather than to the pixel — the reserved scrollbar gutter and a
- * single extra line of wrapped body copy are enough to push the buttons under
- * the fold when this is set to just barely fit.
+ * The accent: a text caret parked after the wordmark. One mark, and one that
+ * means something for a developer's name plate rather than decorating it.
  */
+.hero-caret {
+  display: inline-block;
+  width: 0.13em;
+  height: 0.74em;
+  margin-left: 0.1em;
+  vertical-align: baseline;
+  background-color: var(--color-accent);
+  transform-origin: left bottom;
+  animation: hero-caret-blink 1.5s steps(1, end) infinite;
+}
+
+@keyframes hero-caret-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.22;
+  }
+}
+
+/* Scroll cue: a segment that falls down its own rule. */
+@keyframes hero-cue {
+  0% {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+}
+
+/*
+ * The wordmark is bounded by viewport *height* as well as width — sized on
+ * width alone, three lines push the metadata rails off a laptop screen.
+ * Phones get a larger share of the width, since the staircase indents
+ * collapse there and the full measure is available.
+ */
+.hero-name {
+  font-size: clamp(3rem, min(18vw, 23vh), 20rem);
+}
+
+@media (width < 48rem) {
+  .hero-name {
+    /* Sized so the longest line plus its caret stays on one line — the caret
+       is nowrap-bound to the text, so an overlong value clips instead. */
+    font-size: min(22vw, 15vh);
+  }
+}
+
+/* Short phones: keep the metadata and scroll cue above the fold. */
 @media (width < 48rem) and (height < 44rem) {
   .hero-name {
-    font-size: min(17.5vw, 11vh);
+    font-size: min(19vw, 12vh);
   }
 }
 
@@ -331,5 +441,19 @@
 
   .rule-draw {
     transform: scaleX(1);
+  }
+
+  .hero-halo {
+    animation: none;
+  }
+
+  .hero-caret {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* The parallax bus is inert, so every layer sits at its authored position. */
+  .hero-depth {
+    transform: none;
   }
 }

@@ -10,14 +10,12 @@ import { Marquee } from "@/components/motion/Marquee";
 export default function HomePage() {
   return (
     <>
+      {/*
+        No divider between the hero and Index: the hero's pinned outro already
+        carries the reader across, and a ticker strip in the gap would break
+        the hand-off it sets up.
+      */}
       <Hero />
-
-      <Marquee
-        items={tickers.disciplines}
-        className="border-y border-line bg-surface py-4"
-        itemClassName="label text-muted"
-      />
-
       <Index />
       <Stack />
       <Work />

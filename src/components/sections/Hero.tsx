@@ -1,74 +1,86 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { site } from "@/lib/data/site";
+import type { CSSProperties } from "react";
+import { motion } from "motion/react";
+import { ArrowDown } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { hero, site } from "@/lib/data/site";
 import { scrollToTarget } from "@/lib/scroll";
 import { HERO_START_SECONDS } from "@/lib/constants";
+import { useGSAP } from "@/lib/hooks/useGSAP";
 import { useLocalTime } from "@/lib/hooks/useLocalTime";
 import {
   useIsCoarsePointer,
   usePrefersReducedMotion,
 } from "@/lib/hooks/useMediaQuery";
-import { MagneticButton } from "@/components/motion/MagneticButton";
 
-const NAME_LINES = ["Pavan", "Seshu", "Kumar"] as const;
+gsap.registerPlugin(ScrollTrigger);
 
-/** Staircase indents — the asymmetry is the composition, not decoration. */
-const INDENTS = ["md:ml-0", "md:ml-[14vw]", "md:ml-[28vw]"] as const;
+/** Parallax depth, read by `.hero-depth` through calc(). */
+const depth = (px: number) => ({ "--depth": `${px}px` }) as CSSProperties;
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/** Entrance beats, in seconds after the veil lifts. */
+const BEAT = {
+  backdrop: 0,
+  meta: 0.15,
+  wordmark: 0.3,
+  caret: 0.95,
+  cue: 1.1,
+} as const;
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const nameRef = useRef<HTMLHeadingElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const leadRef = useRef<HTMLSpanElement>(null);
+  const trailRef = useRef<HTMLSpanElement>(null);
+  const cueRef = useRef<HTMLDivElement>(null);
+  const outroRef = useRef<HTMLDivElement>(null);
+
   const time = useLocalTime(site.location.timeZone);
   const reducedMotion = usePrefersReducedMotion();
   const coarse = useIsCoarsePointer();
 
   const start = reducedMotion ? 0 : HERO_START_SECONDS;
 
-  // The whole composition lifts and dims as it leaves — the hand-off to Index.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "-18%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-
   /**
-   * Moves the light inside the letterforms. Coordinates are written as CSS
-   * custom properties on each line, measured against that line's own box —
-   * a single shared value would smear the highlight across the staircase.
+   * One rAF drives every pointer-linked effect in the hero.
+   *
+   * It writes two things: the normalised pointer onto the stage (which the
+   * parallax layers read through calc, so N layers cost one property write),
+   * and the light position inside each wordmark line. Nothing here touches
+   * React state, so moving the mouse renders no components.
    */
   useEffect(() => {
     if (reducedMotion) return;
 
-    const heading = nameRef.current;
-    if (!heading) return;
+    const stage = stageRef.current;
+    if (!stage) return;
 
     const lines = Array.from(
-      heading.querySelectorAll<HTMLElement>("[data-lit-line]"),
+      stage.querySelectorAll<HTMLElement>("[data-lit-line]"),
     );
-    if (lines.length === 0) return;
 
     let rects: DOMRect[] = [];
-    let measureQueued = false;
+    let queued = false;
 
     const measure = () => {
       rects = lines.map((line) => line.getBoundingClientRect());
-      measureQueued = false;
+      queued = false;
     };
-
     const queueMeasure = () => {
-      if (measureQueued) return;
-      measureQueued = true;
+      if (queued) return;
+      queued = true;
       requestAnimationFrame(measure);
     };
 
-    const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.45 };
-    const smoothed = { ...pointer };
+    const pointer = { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
+    const smooth = { ...pointer };
     let frame = 0;
-    let elapsed = 0;
 
     const onMove = (event: PointerEvent) => {
       pointer.x = event.clientX;
@@ -76,35 +88,43 @@ export function Hero() {
     };
 
     const render = (now: number) => {
-      // Without a pointer, the light drifts on its own so the effect still reads.
+      // Without a pointer the light drifts on its own, so touch devices keep
+      // the same identity without any parallax.
       if (coarse) {
-        elapsed = now / 1000;
-        const rect = rects[0];
-        const width = rect?.width ?? window.innerWidth;
-        pointer.x = width * (0.5 + 0.42 * Math.sin(elapsed * 0.45));
-        pointer.y =
-          window.innerHeight * (0.45 + 0.16 * Math.sin(elapsed * 0.31));
+        const t = now / 1000;
+        pointer.x = window.innerWidth * (0.5 + 0.4 * Math.sin(t * 0.42));
+        pointer.y = window.innerHeight * (0.45 + 0.14 * Math.sin(t * 0.29));
       }
 
-      smoothed.x += (pointer.x - smoothed.x) * 0.1;
-      smoothed.y += (pointer.y - smoothed.y) * 0.1;
+      smooth.x += (pointer.x - smooth.x) * 0.075;
+      smooth.y += (pointer.y - smooth.y) * 0.075;
 
-      for (let index = 0; index < lines.length; index += 1) {
-        const rect = rects[index];
+      if (!coarse) {
+        // -1..1 from the viewport centre.
+        const mx = (smooth.x / window.innerWidth) * 2 - 1;
+        const my = (smooth.y / window.innerHeight) * 2 - 1;
+        stage.style.setProperty("--mx", mx.toFixed(4));
+        stage.style.setProperty("--my", my.toFixed(4));
+      }
+
+      for (let i = 0; i < lines.length; i += 1) {
+        const rect = rects[i];
         if (!rect) continue;
-        lines[index].style.setProperty("--lx", `${smoothed.x - rect.left}px`);
-        lines[index].style.setProperty("--ly", `${smoothed.y - rect.top}px`);
+        lines[i].style.setProperty("--lx", `${smooth.x - rect.left}px`);
+        lines[i].style.setProperty("--ly", `${smooth.y - rect.top}px`);
       }
 
       frame = requestAnimationFrame(render);
     };
 
-    // Measure after the entrance has settled — the lines are still moving before that.
-    const settle = window.setTimeout(measure, (start + 1.3) * 1000);
     measure();
+    // Re-measure once the entrance has settled; the lines move until then.
+    const settle = window.setTimeout(measure, (start + 1.4) * 1000);
     frame = requestAnimationFrame(render);
 
-    if (!coarse) window.addEventListener("pointermove", onMove, { passive: true });
+    if (!coarse) {
+      window.addEventListener("pointermove", onMove, { passive: true });
+    }
     window.addEventListener("resize", queueMeasure);
     window.addEventListener("scroll", queueMeasure, { passive: true });
 
@@ -118,138 +138,335 @@ export function Hero() {
   }, [reducedMotion, coarse, start]);
 
   /**
-   * The hydration render always reports "no preference" — the server cannot
-   * know the visitor's setting — so the hidden `initial` state is applied to
-   * every element before the real preference arrives. Dropping the motion
-   * props on the corrected render is not enough on its own: without an
-   * `animate` target the element simply stays hidden.
-   *
-   * `motionKey` therefore remounts the animated elements when the preference
-   * resolves, so they mount fresh with no initial state at all. It costs one
-   * remount, and only for visitors who asked for less motion.
+   * The scroll transformation. The wordmark halves separate and scale while
+   * the grid dollies in behind them, so the hero is travelled through rather
+   * than scrolled past — and the next section's title arrives in the gap the
+   * name leaves behind.
    */
-  const motionKey = reducedMotion ? "static" : "animated";
+  useGSAP(
+    () => {
+      const media = gsap.matchMedia();
 
-  const fadeUp = (extraDelay: number) =>
+      /*
+       * Every tween carries an explicit duration. GSAP's default is 0.5, so
+       * leaving it off makes the timeline's total length the sum of whatever
+       * the longest branch happens to be — and every authored position then
+       * maps to a different scroll fraction than it reads as. Pinning the
+       * total to 1 keeps positions readable as "fraction of the transition".
+       */
+      media.add(
+        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const timeline = gsap.timeline({
+            defaults: { duration: 1, ease: "none" },
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "+=110%",
+              pin: true,
+              scrub: 0.8,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          timeline
+            .to(backdropRef.current, { scale: 1.45, opacity: 0.3 }, 0)
+            .to(
+              leadRef.current,
+              { xPercent: -34, yPercent: -8, scale: 1.2, opacity: 0.16 },
+              0,
+            )
+            .to(
+              trailRef.current,
+              { xPercent: 26, yPercent: 8, scale: 1.2, opacity: 0.16 },
+              0,
+            )
+            .to("[data-hero-meta]", { opacity: 0, y: -24, duration: 0.35 }, 0)
+            .to(cueRef.current, { opacity: 0, y: 24, duration: 0.25 }, 0)
+            .fromTo(
+              outroRef.current,
+              { opacity: 0, scale: 0.94, y: 34 },
+              { opacity: 1, scale: 1, y: 0, duration: 0.35 },
+              0.45,
+            );
+        },
+      );
+
+      media.add(
+        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          // No pin on phones: a pinned 100svh section fights the browser
+          // chrome collapsing on first scroll, which reads as a jump.
+          //
+          // Because nothing is held in place, the hand-off has to finish
+          // early — the section keeps travelling, and a late fade peaks only
+          // after the title has already left the top of the screen.
+          const timeline = gsap.timeline({
+            defaults: { duration: 1, ease: "none" },
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          });
+
+          timeline
+            .to(backdropRef.current, { scale: 1.18, opacity: 0.4 }, 0)
+            .to(leadRef.current, { xPercent: -9, scale: 1.05 }, 0)
+            .to(trailRef.current, { xPercent: 7, scale: 1.05 }, 0)
+            .to("[data-hero-meta]", { opacity: 0, duration: 0.4 }, 0)
+            .to(cueRef.current, { opacity: 0, duration: 0.3 }, 0)
+            .to(
+              [leadRef.current, trailRef.current],
+              { opacity: 0.18, duration: 0.2 },
+              0.15,
+            )
+            .fromTo(
+              outroRef.current,
+              { opacity: 0, y: 26 },
+              { opacity: 1, y: 0, duration: 0.25 },
+              0.18,
+            );
+        },
+      );
+
+      return () => media.revert();
+    },
+    { scope: sectionRef },
+  );
+
+  const enter = (delay: number, y = 18) =>
     reducedMotion
-      ? {}
+      ? { initial: false as const }
       : {
-          initial: { opacity: 0, y: 24 },
+          initial: { opacity: 0, y },
           animate: { opacity: 1, y: 0 },
-          transition: {
-            duration: 1,
-            delay: start + extraDelay,
-            ease: [0.16, 1, 0.3, 1] as const,
-          },
-        };
-
-  const riseIn = (index: number) =>
-    reducedMotion
-      ? {}
-      : {
-          initial: { y: "112%" },
-          animate: { y: "0%" },
-          transition: {
-            duration: 1.25,
-            delay: start + index * 0.1,
-            ease: [0.16, 1, 0.3, 1] as const,
-          },
+          transition: { duration: 1, delay: start + delay, ease: EASE },
         };
 
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="relative flex min-h-svh flex-col justify-between overflow-hidden pb-8 pt-20 md:pb-12 md:pt-32"
+      aria-label="Introduction"
+      className="relative isolate min-h-svh overflow-clip"
     >
-      <motion.div
-        style={reducedMotion ? undefined : { y, opacity }}
-        className="gutter flex flex-1 flex-col justify-between gap-7 md:gap-12"
-      >
-        {/* Masthead metadata */}
+      <div ref={stageRef} className="hero-stage relative flex min-h-svh flex-col">
+        {/* ---------- Background ---------- */}
         <motion.div
-          key={`meta-${motionKey}`}
-          className="flex flex-wrap items-start justify-between gap-x-10 gap-y-4"
-          {...(reducedMotion
-            ? {}
-            : {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                transition: { duration: 0.9, delay: start },
-              })}
+          ref={backdropRef}
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          initial={reducedMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.4, delay: start + BEAT.backdrop }}
         >
-          <p className="label flex items-center gap-2.5 text-muted">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-            </span>
-            {site.availability}
-          </p>
+          <div className="hero-depth absolute inset-0" style={depth(7)}>
+            {/* Inset past the edges so the parallax never exposes a seam. */}
+            <div className="hero-grid absolute inset-[-5%]" />
+          </div>
 
-          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 md:gap-x-8">
-            <p className="label text-muted">{site.location.coordinates}</p>
-            <p className="label text-muted">
-              <span className="tabular-nums text-ink">{time ?? "--:--:--"}</span>
-              <span className="pl-2">IST</span>
-            </p>
+          <div className="hero-halo absolute left-1/2 top-1/2 h-[72vmax] w-[72vmax] -translate-x-1/2 -translate-y-1/2" />
+
+          {/* Registration marks — technical detail, not decoration. */}
+          <div
+            className="hero-depth absolute inset-0 hidden md:block"
+            style={depth(11)}
+          >
+            {[
+              "left-10 top-28",
+              "right-10 top-28",
+              "left-10 bottom-24",
+              "right-10 bottom-24",
+            ].map((position) => (
+              <span
+                key={position}
+                className={`absolute ${position} block h-3 w-3 text-line`}
+              >
+                <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-current" />
+                <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-current" />
+              </span>
+            ))}
+            <span className="label absolute left-10 top-1/2 origin-left -translate-y-1/2 rotate-90 text-line">
+              {site.location.coordinates}
+            </span>
           </div>
         </motion.div>
 
-        {/* The name */}
-        <h1
-          ref={nameRef}
-          aria-label={site.name}
-          className="hero-name font-display font-extrabold uppercase leading-[0.8] tracking-[-0.045em]"
-        >
-          {NAME_LINES.map((line, index) => (
-            <span key={`${line}-${motionKey}`} aria-hidden className="reveal-clip">
-              <motion.span
-                data-lit-line
-                className={`lit-text block ${INDENTS[index]}`}
-                {...riseIn(index)}
-              >
-                {line}
-              </motion.span>
+        {/* ---------- Composition ---------- */}
+        <div className="gutter relative flex min-h-svh flex-1 flex-col justify-between pb-6 pt-20 md:pb-8 md:pt-28">
+          {/* Top rail */}
+          <div data-hero-meta className="hero-depth" style={depth(13)}>
+            <motion.div
+              className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line pt-3"
+              {...enter(BEAT.meta)}
+            >
+              <p className="label text-ink">{hero.discipline}</p>
+              <p className="label text-muted">{hero.experience}</p>
+            </motion.div>
+          </div>
+
+          {/* Wordmark */}
+          <h1
+            aria-label={site.name}
+            className="hero-name hero-depth relative my-auto font-display font-extrabold uppercase leading-[0.8] tracking-[-0.045em]"
+            style={depth(4)}
+          >
+            <span ref={leadRef} className="block will-change-transform">
+              {hero.wordmark.lead.map((line, index) => (
+                <span key={line} aria-hidden className="reveal-clip">
+                  <motion.span
+                    data-lit-line
+                    className="lit-text block whitespace-nowrap"
+                    initial={reducedMotion ? false : { y: "112%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: 1.25,
+                      delay: start + BEAT.wordmark + index * 0.1,
+                      ease: EASE,
+                    }}
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
             </span>
-          ))}
-        </h1>
 
-        {/* Statement and actions */}
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <motion.div
-            key={`statement-${motionKey}`}
-            className="max-w-[46ch]"
-            {...fadeUp(0.45)}
-          >
-            <p className="label mb-4 text-accent">{site.role}</p>
-            <p className="text-lead text-ink/60">{site.tagline}</p>
-          </motion.div>
+            <span ref={trailRef} className="block will-change-transform">
+              {hero.wordmark.trail.map((line, index) => (
+                <span
+                  key={line}
+                  aria-hidden
+                  className={`reveal-clip ${
+                    index === 0
+                      ? "md:ml-[6vw] lg:ml-[10vw] xl:ml-[15vw]"
+                      : "md:ml-[12vw] lg:ml-[20vw] xl:ml-[30vw]"
+                  }`}
+                >
+                  <motion.span
+                    data-lit-line
+                    className="lit-text block whitespace-nowrap"
+                    initial={reducedMotion ? false : { y: "112%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: 1.25,
+                      delay:
+                        start +
+                        BEAT.wordmark +
+                        (hero.wordmark.lead.length + index) * 0.1,
+                      ease: EASE,
+                    }}
+                  >
+                    {line}
+                    {index === hero.wordmark.trail.length - 1 ? (
+                      <motion.span
+                        aria-hidden
+                        className="hero-caret"
+                        initial={reducedMotion ? false : { scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: start + BEAT.caret,
+                          ease: EASE,
+                        }}
+                      />
+                    ) : null}
+                  </motion.span>
+                </span>
+              ))}
+            </span>
+          </h1>
 
-          <motion.div
-            key={`actions-${motionKey}`}
-            className="flex flex-wrap items-center gap-3"
-            {...fadeUp(0.55)}
-          >
-            <MagneticButton
-              onClick={() => scrollToTarget("#work")}
-              cursorLabel="Go"
-              className="label items-center border border-line px-5 py-4 md:px-6 text-ink transition-colors duration-300 hover:border-accent hover:text-accent"
+          {/* Stack line — sits under the wordmark, marked by the accent. */}
+          <div data-hero-meta className="hero-depth" style={depth(13)}>
+            <motion.p
+              className="label flex items-center gap-3 text-muted"
+              {...enter(BEAT.meta + 0.75)}
             >
-              Selected work
-              <ArrowDown className="h-3.5 w-3.5" strokeWidth={1.5} />
-            </MagneticButton>
+              <span aria-hidden className="h-2 w-2 shrink-0 bg-accent" />
+              {hero.stack}
+            </motion.p>
+          </div>
 
-            <MagneticButton
-              href={site.resume}
-              external
-              className="label items-center bg-ink px-5 py-4 md:px-6 text-void transition-colors duration-300 hover:bg-accent"
+          {/* Bottom rail */}
+          <div
+            data-hero-meta
+            className="hero-depth mt-8 md:mt-10"
+            style={depth(13)}
+          >
+            <motion.div
+              className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line pt-3"
+              {...enter(BEAT.meta + 0.85)}
             >
-              Résumé
-              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.5} />
-            </MagneticButton>
-          </motion.div>
+              <p className="label text-muted">{hero.based}</p>
+              <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                <p className="label flex items-center gap-2 text-muted">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                  </span>
+                  {site.availability}
+                </p>
+                <p className="label text-muted">
+                  <span className="tabular-nums text-ink">
+                    {time ?? "--:--:--"}
+                  </span>
+                  <span className="pl-2">IST</span>
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Scroll cue */}
+          <div ref={cueRef} className="mt-6 flex md:mt-8">
+            <motion.button
+              type="button"
+              onClick={() => scrollToTarget("#index")}
+              data-cursor="view"
+              data-cursor-label="Scroll"
+              aria-label="Scroll to the next section"
+              className="group flex cursor-pointer items-center gap-4 py-2 text-left"
+              {...enter(BEAT.cue, 12)}
+            >
+              <span className="label text-muted transition-colors duration-300 group-hover:text-accent">
+                Scroll
+              </span>
+              {/* A segment falling down its own rule. */}
+              <span
+                aria-hidden
+                className="relative block h-10 w-px overflow-hidden bg-line"
+              >
+                <span
+                  className="absolute inset-x-0 top-0 block h-1/2 bg-accent"
+                  style={{ animation: "hero-cue 2.1s ease-in-out infinite" }}
+                />
+              </span>
+              <ArrowDown
+                className="h-3.5 w-3.5 text-muted transition-colors duration-300 group-hover:text-accent"
+                strokeWidth={1.5}
+              />
+            </motion.button>
+          </div>
         </div>
-      </motion.div>
+
+        {/* ---------- Hand-off to the next section ---------- */}
+        <div
+          ref={outroRef}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-end gap-5 pb-24 opacity-0 md:justify-center md:pb-0"
+        >
+          <p className="label text-accent">
+            {hero.outro.kicker}
+            <span className="px-2 text-line">/</span>
+            <span className="text-muted">01</span>
+          </p>
+          <p className="font-display text-display font-extrabold uppercase tracking-tight text-ink">
+            {hero.outro.title}
+          </p>
+          <span className="block h-px w-24 bg-accent" />
+        </div>
+      </div>
     </section>
   );
 }

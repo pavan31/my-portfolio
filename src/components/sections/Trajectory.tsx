@@ -90,7 +90,7 @@ export function Trajectory() {
         index="04"
         label="Trajectory"
         title={["How I got", "here"]}
-        note="Eight years from a first internship to leading delivery."
+        note="From a first internship to leading delivery."
       />
 
       <div className="mt-16 grid gap-10 lg:grid-cols-12">
