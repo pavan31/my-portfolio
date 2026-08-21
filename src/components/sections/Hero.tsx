@@ -11,6 +11,7 @@ import { scrollToTarget } from "@/lib/scroll";
 import { HERO_START_SECONDS } from "@/lib/constants";
 import { useGSAP } from "@/lib/hooks/useGSAP";
 import { useLocalTime } from "@/lib/hooks/useLocalTime";
+import { usePointerBus } from "@/lib/hooks/usePointerBus";
 import {
   useIsCoarsePointer,
   usePrefersReducedMotion,
@@ -18,7 +19,7 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Parallax depth, read by `.hero-depth` through calc(). */
+/** Parallax depth, read by `.pointer-depth` through calc(). */
 const depth = (px: number) => ({ "--depth": `${px}px` }) as CSSProperties;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -28,7 +29,6 @@ const BEAT = {
   backdrop: 0,
   meta: 0.15,
   wordmark: 0.3,
-  caret: 0.95,
   cue: 1.1,
 } as const;
 
@@ -48,28 +48,26 @@ export function Hero() {
   const start = reducedMotion ? 0 : HERO_START_SECONDS;
 
   /**
-   * One rAF drives every pointer-linked effect in the hero.
-   *
-   * It writes two things: the normalised pointer onto the stage (which the
-   * parallax layers read through calc, so N layers cost one property write),
-   * and the light position inside each wordmark line. Nothing here touches
-   * React state, so moving the mouse renders no components.
+   * Rects for the lit wordmark lines. Measured out of band and read by the
+   * pointer bus each frame, so the loop never touches layout.
    */
-  useEffect(() => {
-    if (reducedMotion) return;
+  const litRef = useRef<{ lines: HTMLElement[]; rects: DOMRect[] }>({
+    lines: [],
+    rects: [],
+  });
 
+  useEffect(() => {
     const stage = stageRef.current;
-    if (!stage) return;
+    if (!stage || reducedMotion) return;
 
     const lines = Array.from(
       stage.querySelectorAll<HTMLElement>("[data-lit-line]"),
     );
+    litRef.current.lines = lines;
 
-    let rects: DOMRect[] = [];
     let queued = false;
-
     const measure = () => {
-      rects = lines.map((line) => line.getBoundingClientRect());
+      litRef.current.rects = lines.map((line) => line.getBoundingClientRect());
       queued = false;
     };
     const queueMeasure = () => {
@@ -78,64 +76,37 @@ export function Hero() {
       requestAnimationFrame(measure);
     };
 
-    const pointer = { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
-    const smooth = { ...pointer };
-    let frame = 0;
-
-    const onMove = (event: PointerEvent) => {
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-    };
-
-    const render = (now: number) => {
-      // Without a pointer the light drifts on its own, so touch devices keep
-      // the same identity without any parallax.
-      if (coarse) {
-        const t = now / 1000;
-        pointer.x = window.innerWidth * (0.5 + 0.4 * Math.sin(t * 0.42));
-        pointer.y = window.innerHeight * (0.45 + 0.14 * Math.sin(t * 0.29));
-      }
-
-      smooth.x += (pointer.x - smooth.x) * 0.075;
-      smooth.y += (pointer.y - smooth.y) * 0.075;
-
-      if (!coarse) {
-        // -1..1 from the viewport centre.
-        const mx = (smooth.x / window.innerWidth) * 2 - 1;
-        const my = (smooth.y / window.innerHeight) * 2 - 1;
-        stage.style.setProperty("--mx", mx.toFixed(4));
-        stage.style.setProperty("--my", my.toFixed(4));
-      }
-
-      for (let i = 0; i < lines.length; i += 1) {
-        const rect = rects[i];
-        if (!rect) continue;
-        lines[i].style.setProperty("--lx", `${smooth.x - rect.left}px`);
-        lines[i].style.setProperty("--ly", `${smooth.y - rect.top}px`);
-      }
-
-      frame = requestAnimationFrame(render);
-    };
-
     measure();
     // Re-measure once the entrance has settled; the lines move until then.
     const settle = window.setTimeout(measure, (start + 1.4) * 1000);
-    frame = requestAnimationFrame(render);
-
-    if (!coarse) {
-      window.addEventListener("pointermove", onMove, { passive: true });
-    }
     window.addEventListener("resize", queueMeasure);
     window.addEventListener("scroll", queueMeasure, { passive: true });
 
     return () => {
       window.clearTimeout(settle);
-      cancelAnimationFrame(frame);
-      window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", queueMeasure);
       window.removeEventListener("scroll", queueMeasure);
     };
-  }, [reducedMotion, coarse, start]);
+  }, [reducedMotion, start]);
+
+  /**
+   * One gated loop publishes the pointer to the whole stage and moves the
+   * light inside the letterforms. Nothing here touches React state, so moving
+   * the mouse renders no components.
+   */
+  usePointerBus(stageRef, {
+    enabled: !reducedMotion,
+    autoDrift: coarse,
+    onFrame: (x, y) => {
+      const { lines, rects } = litRef.current;
+      for (let i = 0; i < lines.length; i += 1) {
+        const rect = rects[i];
+        if (!rect) continue;
+        lines[i].style.setProperty("--lx", `${x - rect.left}px`);
+        lines[i].style.setProperty("--ly", `${y - rect.top}px`);
+      }
+    },
+  });
 
   /**
    * The scroll transformation. The wordmark halves separate and scale while
@@ -166,6 +137,15 @@ export function Hero() {
               pin: true,
               scrub: 0.8,
               invalidateOnRefresh: true,
+              /*
+               * Three sections pin on this page. ScrollTrigger has to measure
+               * them in document order or a later pin computes its start
+               * against a stale document height and activates early. They are
+               * not created in that order — the career log builds its pin
+               * after a hydration pass — so the order is declared here
+               * instead: highest priority refreshes first.
+               */
+              refreshPriority: 3,
             },
           });
 
@@ -252,7 +232,7 @@ export function Hero() {
       aria-label="Introduction"
       className="relative isolate min-h-svh overflow-clip"
     >
-      <div ref={stageRef} className="hero-stage relative flex min-h-svh flex-col">
+      <div ref={stageRef} className="pointer-stage relative flex min-h-svh flex-col">
         {/* ---------- Background ---------- */}
         <motion.div
           ref={backdropRef}
@@ -262,16 +242,16 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.4, delay: start + BEAT.backdrop }}
         >
-          <div className="hero-depth absolute inset-0" style={depth(7)}>
+          <div className="pointer-depth absolute inset-0" style={depth(7)}>
             {/* Inset past the edges so the parallax never exposes a seam. */}
-            <div className="hero-grid absolute inset-[-5%]" />
+            <div className="tech-grid hero-grid absolute inset-[-5%]" />
           </div>
 
           <div className="hero-halo absolute left-1/2 top-1/2 h-[72vmax] w-[72vmax] -translate-x-1/2 -translate-y-1/2" />
 
           {/* Registration marks — technical detail, not decoration. */}
           <div
-            className="hero-depth absolute inset-0 hidden md:block"
+            className="pointer-depth absolute inset-0 hidden md:block"
             style={depth(11)}
           >
             {[
@@ -297,7 +277,7 @@ export function Hero() {
         {/* ---------- Composition ---------- */}
         <div className="gutter relative flex min-h-svh flex-1 flex-col justify-between pb-6 pt-20 md:pb-8 md:pt-28">
           {/* Top rail */}
-          <div data-hero-meta className="hero-depth" style={depth(13)}>
+          <div data-hero-meta className="pointer-depth" style={depth(13)}>
             <motion.div
               className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-line pt-3"
               {...enter(BEAT.meta)}
@@ -310,7 +290,7 @@ export function Hero() {
           {/* Wordmark */}
           <h1
             aria-label={site.name}
-            className="hero-name hero-depth relative my-auto font-display font-extrabold uppercase leading-[0.8] tracking-[-0.045em]"
+            className="hero-name pointer-depth relative my-auto font-display font-extrabold uppercase leading-[0.8] tracking-[-0.045em]"
             style={depth(4)}
           >
             <span ref={leadRef} className="block will-change-transform">
@@ -359,19 +339,6 @@ export function Hero() {
                     }}
                   >
                     {line}
-                    {index === hero.wordmark.trail.length - 1 ? (
-                      <motion.span
-                        aria-hidden
-                        className="hero-caret"
-                        initial={reducedMotion ? false : { scaleX: 0 }}
-                        animate={{ scaleX: 1 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: start + BEAT.caret,
-                          ease: EASE,
-                        }}
-                      />
-                    ) : null}
                   </motion.span>
                 </span>
               ))}
@@ -379,7 +346,7 @@ export function Hero() {
           </h1>
 
           {/* Stack line — sits under the wordmark, marked by the accent. */}
-          <div data-hero-meta className="hero-depth" style={depth(13)}>
+          <div data-hero-meta className="pointer-depth" style={depth(13)}>
             <motion.p
               className="label flex items-center gap-3 text-muted"
               {...enter(BEAT.meta + 0.75)}
@@ -392,7 +359,7 @@ export function Hero() {
           {/* Bottom rail */}
           <div
             data-hero-meta
-            className="hero-depth mt-8 md:mt-10"
+            className="pointer-depth mt-8 md:mt-10"
             style={depth(13)}
           >
             <motion.div
@@ -401,13 +368,7 @@ export function Hero() {
             >
               <p className="label text-muted">{hero.based}</p>
               <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-                <p className="label flex items-center gap-2 text-muted">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-                  </span>
-                  {site.availability}
-                </p>
+                <p className="label text-accent">{site.availability}</p>
                 <p className="label text-muted">
                   <span className="tabular-nums text-ink">
                     {time ?? "--:--:--"}
@@ -422,7 +383,7 @@ export function Hero() {
           <div ref={cueRef} className="mt-6 flex md:mt-8">
             <motion.button
               type="button"
-              onClick={() => scrollToTarget("#index")}
+              onClick={() => scrollToTarget("#about")}
               data-cursor="view"
               data-cursor-label="Scroll"
               aria-label="Scroll to the next section"

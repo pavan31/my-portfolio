@@ -1,23 +1,20 @@
+/*
+ * Years of experience are counted from the career dates rather than restated
+ * here — the career file is the only place employment history is written, so
+ * the two cannot drift apart.
+ */
+import { EXPERIENCE_YEARS } from "./experience";
+
 /**
  * Single source of truth for identity, contact coordinates and copy.
  * Presentation components must never hardcode any of this.
  */
 
-export const CAREER_START_YEAR = 2018;
-
-/**
- * Stated experience, in years. Deliberately an explicit figure rather than
- * `currentYear - CAREER_START_YEAR`, which counts from the first full-time
- * role and reads high. Every surface that quotes a number reads it from here,
- * so the site cannot contradict itself.
- */
-export const EXPERIENCE_YEARS = 6;
-
 export const site = {
   name: "Pavan Seshu Kumar",
   shortName: "Pavan",
   monogram: "PSK",
-  role: "Software Development Engineer II",
+  role: "Senior Software Engineer I",
   discipline: "Full-stack engineer",
   url: "https://pavanseshukumar.github.io",
   locale: "en_IN",
@@ -36,7 +33,7 @@ export const site = {
   availability: "Open to select work",
   tagline: "Full-stack engineer building web and mobile products end to end.",
   description:
-    "Pavan Seshu Kumar is a full-stack engineer in Visakhapatnam, India, building production web and mobile products with React, Next.js, React Native and Node — from healthcare apps to exam platforms and subsea engineering systems.",
+    "Pavan Seshu Kumar is a full-stack engineer in Visakhapatnam, India, building production web and mobile products with React, Next.js, React Native and Node — from AI-powered assessment platforms to healthcare apps and enterprise synchronization services.",
   keywords: [
     "Pavan Seshu Kumar",
     "full-stack developer",
@@ -73,15 +70,6 @@ export const hero = {
 
 /** Ticker strips — connective tissue between sections, not decoration. */
 export const tickers = {
-  disciplines: [
-    "Front-end architecture",
-    "React Native",
-    "Design systems",
-    "Node services",
-    "GraphQL",
-    "Performance",
-    "Team leadership",
-  ],
   invitation: [
     "Available for select work",
     "Product engineering",
@@ -92,22 +80,36 @@ export const tickers = {
 
 /** Sections in scroll order — drives the nav, the edge rail and the sitemap. */
 export const sections = [
-  { id: "index", index: "01", label: "Index" },
-  { id: "stack", index: "02", label: "Stack" },
-  { id: "work", index: "03", label: "Work" },
-  { id: "trajectory", index: "04", label: "Trajectory" },
+  { id: "about", index: "01", label: "About" },
+  { id: "dna", index: "02", label: "Engineering DNA" },
+  { id: "experience", index: "03", label: "Experience" },
+  { id: "work", index: "04", label: "Work" },
   { id: "contact", index: "05", label: "Contact" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
 
-/** Words the manifesto highlights in accent as they resolve on scroll. */
-export const manifesto = {
-  statement:
-    "I build the parts people actually touch — and the parts that hold them up. Work across healthcare, commerce and subsea engineering has taught me that the interface is the product, and that nothing ships unless the layer beneath it is boring, predictable and fast.",
-  accents: ["the interface is the product", "boring, predictable and fast"],
-  supporting: [
-    "I work end to end: React and Next.js on the front, React Native where the product lives in a pocket, Node, Spring Boot and GraphQL behind it. I lead small teams, review hard, and prefer the solution that is still legible six months later.",
-    "Currently building at Aspire Infolabs from Visakhapatnam, India.",
+/**
+ * The About section: an identity statement, not a résumé paragraph.
+ *
+ * `statement` is revealed word by word against scroll, so it is authored as
+ * one sentence and split at render — never as pre-broken lines.
+ */
+export const about = {
+  title: ["About", "Me"],
+  statement: "I build software that moves ideas forward.",
+  /** The one word that resolves to accent rather than ink. */
+  statementAccent: "forward.",
+  lede: `${EXPERIENCE_YEARS} years building for the web, for phones, and for the services underneath both.`,
+  paragraphs: [
+    "I work the whole stack — the interface a product gets judged on, the services that have to stay up while it is, and the pipelines that get both into production without anyone staying late. Assessment platforms, healthcare, commerce, enterprise integration: different domains, same discipline.",
+    "Lately that includes agent-shaped tooling: putting language models to work on the repetitive parts of engineering itself. I like problems that are still ambiguous, and code that is still legible six months after the deadline.",
   ],
+  footnote: "Currently a Senior Software Engineer at Carelon Global Solutions India LLP.",
+  /** Hand-off teaser, mirroring the hero's. */
+  outro: {
+    kicker: "Next",
+    index: "02",
+    title: "How I build",
+  },
 } as const;

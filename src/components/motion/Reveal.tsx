@@ -12,8 +12,6 @@ type RevealProps = {
   /** Distance travelled, in px. Direction is set by `from`. */
   distance?: number;
   from?: "bottom" | "top" | "left" | "right";
-  /** Wrap in an overflow-hidden box so the child crosses a hard edge. */
-  masked?: boolean;
   once?: boolean;
 };
 
@@ -28,7 +26,6 @@ export function Reveal({
   delay = 0,
   distance = 28,
   from = "bottom",
-  masked = false,
   once = true,
 }: RevealProps) {
   const reducedMotion = usePrefersReducedMotion();
@@ -53,7 +50,7 @@ export function Reveal({
     },
   };
 
-  const content = (
+  return (
     <Component
       className={className}
       variants={variants}
@@ -64,6 +61,4 @@ export function Reveal({
       {children}
     </Component>
   );
-
-  return masked ? <span className="reveal-clip">{content}</span> : content;
 }

@@ -1,25 +1,26 @@
 import { tickers } from "@/lib/data/site";
 import { Hero } from "@/components/sections/Hero";
-import { Index } from "@/components/sections/Index";
-import { Stack } from "@/components/sections/Stack";
+import { About } from "@/components/sections/About";
+import { EngineeringDna } from "@/components/sections/EngineeringDna";
+import { CareerLog } from "@/components/sections/CareerLog";
 import { Work } from "@/components/sections/Work";
-import { Trajectory } from "@/components/sections/Trajectory";
 import { Contact } from "@/components/sections/Contact";
 import { Marquee } from "@/components/motion/Marquee";
 
+/*
+ * Who I am, how I build, where I have been, what I shipped, how to reach me.
+ * Identity is established before the reader ever reaches the project list —
+ * and no divider strips interrupt the hand-offs the sections set up for
+ * each other.
+ */
 export default function HomePage() {
   return (
     <>
-      {/*
-        No divider between the hero and Index: the hero's pinned outro already
-        carries the reader across, and a ticker strip in the gap would break
-        the hand-off it sets up.
-      */}
       <Hero />
-      <Index />
-      <Stack />
+      <About />
+      <EngineeringDna />
+      <CareerLog />
       <Work />
-      <Trajectory />
 
       <Marquee
         items={tickers.invitation}

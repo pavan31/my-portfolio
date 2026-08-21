@@ -20,7 +20,7 @@ export function getLenis(): Lenis | null {
  * of the viewport and ignores CSS scroll-margin, so section headings would
  * otherwise land underneath the header.
  */
-const HEADER_CLEARANCE = 88;
+export const HEADER_CLEARANCE = 88;
 
 export function scrollToTarget(
   target: string | HTMLElement | number,
@@ -39,13 +39,24 @@ export function scrollToTarget(
     return;
   }
 
-  // Reduced motion, or before Lenis mounts — fall back to the platform.
+  /*
+   * Reduced motion, or before Lenis mounts — fall back to the platform.
+   *
+   * scrollIntoView has no offset, so it parks the target flush against the
+   * top of the viewport, underneath the fixed masthead. Compute the position
+   * instead, so the clearance applies on both paths.
+   */
   if (typeof target === "number") {
-    window.scrollTo({ top: target, behavior: "auto" });
+    window.scrollTo({ top: target + offset, behavior: "auto" });
     return;
   }
 
   const element =
-    typeof target === "string" ? document.querySelector(target) : target;
-  element?.scrollIntoView({ behavior: "auto", block: "start" });
+    typeof target === "string"
+      ? document.querySelector(target)
+      : target;
+  if (!element) return;
+
+  const top = element.getBoundingClientRect().top + window.scrollY + offset;
+  window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
 }

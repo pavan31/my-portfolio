@@ -5,6 +5,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import { site } from "@/lib/data/site";
+import { currentRecord, educationRecord } from "@/lib/data/experience";
 import { socials } from "@/lib/data/socials";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { CustomCursor } from "@/components/motion/CustomCursor";
@@ -100,13 +101,14 @@ const personSchema = {
     addressRegion: site.location.region,
     addressCountry: site.location.country,
   },
+  /* Read from the career log, so the markup cannot drift from the page. */
   worksFor: {
     "@type": "Organization",
-    name: "Aspire Infolabs Global",
+    name: currentRecord.organisation,
   },
   alumniOf: {
     "@type": "CollegeOrUniversity",
-    name: "IIITDM Kancheepuram",
+    name: educationRecord.organisation,
   },
   knowsAbout: [
     "React",
