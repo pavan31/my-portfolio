@@ -17,8 +17,8 @@ export const socials: readonly Social[] = [
   {
     id: "github",
     label: "GitHub",
-    handle: "pavan31",
-    href: "https://github.com/pavan31",
+    handle: "pavanseshukumar",
+    href: "https://github.com/pavanseshukumar",
   },
   {
     id: "email",

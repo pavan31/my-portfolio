@@ -393,5 +393,5 @@ export const work = {
   /** The one word that resolves to accent. */
   titleAccent: "built.",
   note: "An assessment platform, two web products, two mobile apps and a synchronization layer.",
-  outro: { kicker: "Next", index: "05", title: "Contact" },
+  outro: { kicker: "Next", index: "06", title: "Impact" },
 } as const;

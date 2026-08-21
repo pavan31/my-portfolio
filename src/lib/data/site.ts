@@ -84,7 +84,8 @@ export const sections = [
   { id: "dna", index: "02", label: "Engineering DNA" },
   { id: "experience", index: "03", label: "Experience" },
   { id: "work", index: "04", label: "Work" },
-  { id: "contact", index: "05", label: "Contact" },
+  { id: "impact", index: "06", label: "Impact" },
+  { id: "contact", index: "07", label: "Contact" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];

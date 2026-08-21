@@ -95,7 +95,7 @@ export function Contact() {
       className="gutter scroll-mt-24 border-t border-line bg-void py-28 md:py-40"
     >
       <SectionHeading
-        index="05"
+        index="07"
         label="Contact"
         title={["Tell me what", "you’re building"]}
         note="Open to product work, platform work, and the awkward problems in between."
