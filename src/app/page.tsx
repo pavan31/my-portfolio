@@ -4,7 +4,6 @@ import { About } from "@/components/sections/About";
 import { EngineeringDna } from "@/components/sections/EngineeringDna";
 import { CareerLog } from "@/components/sections/CareerLog";
 import { Work } from "@/components/sections/Work";
-import { Impact } from "@/components/sections/Impact";
 import { Contact } from "@/components/sections/Contact";
 import { Marquee } from "@/components/motion/Marquee";
 
@@ -32,7 +31,6 @@ export default function HomePage() {
         itemClassName="font-display text-title font-bold tracking-tight text-dim"
       />
 
-      <Impact />
       <Contact />
     </>
   );
